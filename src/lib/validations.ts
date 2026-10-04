@@ -1,0 +1,91 @@
+import { z } from "zod";
+import {
+  PAYMENT_STATUSES,
+  RESERVATION_STATUSES,
+  SERVICE_TYPES,
+} from "@/lib/types";
+
+const moneyField = z.coerce.number().min(0, "Must be 0 or more");
+
+export const reservationSchema = z.object({
+  id: z.string().optional(),
+  date: z.string().min(1, "Date is required"),
+  time: z.string().min(1, "Time is required"),
+  customerName: z.string().trim().min(1, "Name is required"),
+  phone: z.string().trim().optional().default(""),
+  whatsapp: z.string().trim().optional().default(""),
+  numberOfPeople: z.coerce.number().int().min(1).optional().default(1),
+  type: z.enum(SERVICE_TYPES),
+  serviceName: z.string().trim().optional().default(""),
+  pickupLocation: z.string().trim().optional().default(""),
+  destination: z.string().trim().optional().default(""),
+  price: moneyField,
+  cost: moneyField.optional().default(0),
+  currency: z.string().optional().default("MAD"),
+  status: z.enum(RESERVATION_STATUSES),
+  paymentStatus: z.enum(PAYMENT_STATUSES),
+  description: z.string().optional().default(""),
+  internalNotes: z.string().optional().default(""),
+  driver: z.string().trim().optional().default(""),
+  vehicle: z.string().trim().optional().default(""),
+  flightNumber: z.string().trim().optional().default(""),
+  bookingSource: z.string().optional().default("APP"),
+});
+
+export type ReservationInput = z.infer<typeof reservationSchema>;
+
+export const serviceSchema = z.object({
+  id: z.string().optional(),
+  name: z.string().trim().min(1, "Service name is required"),
+  type: z.enum(SERVICE_TYPES),
+  defaultPrice: moneyField,
+  defaultCost: moneyField.optional().default(0),
+  description: z.string().optional().default(""),
+  active: z.coerce.boolean().optional().default(true),
+});
+
+export type ServiceInput = z.infer<typeof serviceSchema>;
+
+export const customerSchema = z.object({
+  id: z.string().optional(),
+  name: z.string().trim().min(1, "Name is required"),
+  phone: z.string().trim().min(6, "Phone is required"),
+  whatsapp: z.string().trim().optional().default(""),
+  country: z.string().trim().optional().default(""),
+  email: z.string().trim().optional().default(""),
+  notes: z.string().optional().default(""),
+});
+
+export type CustomerInput = z.infer<typeof customerSchema>;
+
+export const settingsSchema = z.object({
+  businessName: z.string().trim().min(1),
+  currency: z.string().trim().min(1),
+  timezone: z.string().trim().min(1),
+  defaultCurrency: z.string().trim().min(1),
+  whatsappCountryCode: z.string().trim().min(1),
+  driverWhatsApp: z.string().trim().optional().default(""),
+});
+
+export const loginSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Enter a valid email"),
+  password: z.string().min(1, "Password is required"),
+});
+
+export const reservationFiltersSchema = z.object({
+  q: z.string().optional().default(""),
+  date: z.string().optional().default(""),
+  from: z.string().optional().default(""),
+  to: z.string().optional().default(""),
+  service: z.string().optional().default(""),
+  type: z.string().optional().default(""),
+  status: z.string().optional().default(""),
+  paymentStatus: z.string().optional().default(""),
+  range: z
+    .enum(["today", "tomorrow", "week", "month", "all", "custom"])
+    .optional()
+    .default("all"),
+});

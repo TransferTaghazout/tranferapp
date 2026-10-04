@@ -1,0 +1,100 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f7f3eb;
+  --foreground: #17211c;
+  --card: #fffdf8;
+  --card-foreground: #17211c;
+  --popover: #fffdf8;
+  --popover-foreground: #17211c;
+  --primary: #0c3d2e;
+  --primary-foreground: #f7f3eb;
+  --secondary: #e8d5b5;
+  --secondary-foreground: #3d2e16;
+  --muted: #efe7d8;
+  --muted-foreground: #5d675f;
+  --accent: #1b6b93;
+  --accent-foreground: #f3f8fb;
+  --destructive: #9b2c2c;
+  --destructive-foreground: #fff8f8;
+  --border: #e4d8c4;
+  --input: #e4d8c4;
+  --ring: #0c3d2e;
+  --sand: #c4a574;
+  --forest: #0c3d2e;
+  --ocean: #1b6b93;
+  --radius: 1rem;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sand: var(--sand);
+  --color-forest: var(--forest);
+  --color-ocean: var(--ocean);
+  --font-sans: var(--font-manrope);
+  --font-display: var(--font-cormorant);
+  --radius-sm: calc(var(--radius) - 8px);
+  --radius-md: calc(var(--radius) - 4px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 8px);
+}
+
+* {
+  border-color: var(--border);
+}
+
+html {
+  background: var(--background);
+}
+
+body {
+  background:
+    radial-gradient(1200px 500px at 10% -10%, rgba(196, 165, 116, 0.18), transparent 50%),
+    radial-gradient(900px 400px at 110% 0%, rgba(27, 107, 147, 0.1), transparent 45%),
+    var(--background);
+  color: var(--foreground);
+  font-family: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  min-height: 100dvh;
+}
+
+h1,
+h2,
+.font-display {
+  font-family: var(--font-cormorant), ui-serif, Georgia, serif;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  touch-action: manipulation;
+}
+
+::selection {
+  background: #c4a574;
+  color: #17211c;
+}
+
+input[type="date"],
+input[type="time"] {
+  min-height: 3rem;
+}
