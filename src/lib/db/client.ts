@@ -57,12 +57,6 @@ function candidateHosts(primary: string) {
     process.env.DB_HOST,
     "mytransferapp",
     "transfer_mytransferapp",
-    "transfer-mytransferapp",
-    "tasks.transfer_mytransferapp",
-    "tasks.mytransferapp",
-    "172.17.0.1",
-    "172.18.0.1",
-    "10.0.0.2",
   ].filter((host): host is string => Boolean(host));
   return [...new Set(hosts)];
 }
@@ -76,7 +70,7 @@ function makePool(target: DbTarget): Pool {
     database: target.database,
     ssl: target.ssl ? { rejectUnauthorized: false } : false,
     max: 8,
-    connectionTimeoutMillis: 8000,
+    connectionTimeoutMillis: 1500,
   };
   return new Pool(config);
 }
