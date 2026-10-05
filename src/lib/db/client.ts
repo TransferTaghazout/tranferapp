@@ -1,4 +1,4 @@
-import { Pool } from "pg";
+import { Pool, type PoolConfig } from "pg";
 
 let pool: Pool | null = null;
 let schemaReady = false;
@@ -6,6 +6,15 @@ let connecting: Promise<Pool> | null = null;
 
 const DEFAULT_DATABASE_URL =
   "postgres://ahmad:ahmad123@transfer_mytransferapp:5432/transferapp?sslmode=disable";
+
+type DbTarget = {
+  host: string;
+  port: number;
+  user: string;
+  password: string;
+  database: string;
+  ssl: boolean;
+};
 
 export function getDatabaseUrl() {
   if (process.env.DATABASE_URL) return process.env.DATABASE_URL;
@@ -15,7 +24,7 @@ export function getDatabaseUrl() {
   const database = process.env.POSTGRES_DB || process.env.DB_NAME;
   const port = process.env.POSTGRES_PORT || process.env.DB_PORT || "5432";
   if (host && user && password && database) {
-    return `postgres://${encodeURIComponent(user)}:${encodeURIComponent(password)}@${host}:${port}/${database}?sslmode=disable`;
+    return `postgres://${user}:${password}@${host}:${port}/${database}?sslmode=disable`;
   }
   return DEFAULT_DATABASE_URL;
 }
@@ -24,55 +33,74 @@ export function isDatabaseConfigured() {
   return Boolean(getDatabaseUrl());
 }
 
-function candidateUrls(raw: string) {
-  const urls = [raw];
-  try {
-    const parsed = new URL(raw);
-    const host = parsed.hostname;
-    const extras = new Set<string>();
-    if (host.includes("_")) extras.add(host.split("_").slice(1).join("_"));
-    extras.add(host.replace(/_/g, "-"));
-    extras.add("mytransferapp");
-    extras.add("transfer_mytransferapp");
-    for (const extra of extras) {
-      if (!extra || extra === host) continue;
-      const next = new URL(raw);
-      next.hostname = extra;
-      urls.push(next.toString());
-    }
-  } catch {
-    /* keep original */
+function parseDatabaseUrl(raw: string): DbTarget {
+  const match = raw.match(
+    /^postgres(?:ql)?:\/\/([^:/?#]+):([^@/?#]+)@(\[[^\]]+\]|[^:/?#]+):(\d+)\/([^?]+)/i,
+  );
+  if (match) {
+    return {
+      user: decodeURIComponent(match[1]),
+      password: decodeURIComponent(match[2]),
+      host: match[3],
+      port: Number(match[4]),
+      database: decodeURIComponent(match[5].replace(/\/$/, "")),
+      ssl: /sslmode=require/i.test(raw),
+    };
   }
-  return [...new Set(urls)];
+  throw new Error("DATABASE_URL ghalat.");
 }
 
-function makePool(connectionString: string) {
-  return new Pool({
-    connectionString,
-    ssl: connectionString.includes("sslmode=require") ? { rejectUnauthorized: false } : false,
+function candidateHosts(primary: string) {
+  const hosts = [
+    primary,
+    process.env.POSTGRES_HOST,
+    process.env.DB_HOST,
+    "mytransferapp",
+    "transfer_mytransferapp",
+    "transfer-mytransferapp",
+    "tasks.transfer_mytransferapp",
+    "tasks.mytransferapp",
+    "172.17.0.1",
+    "172.18.0.1",
+    "10.0.0.2",
+  ].filter((host): host is string => Boolean(host));
+  return [...new Set(hosts)];
+}
+
+function makePool(target: DbTarget): Pool {
+  const config: PoolConfig = {
+    host: target.host,
+    port: target.port,
+    user: target.user,
+    password: target.password,
+    database: target.database,
+    ssl: target.ssl ? { rejectUnauthorized: false } : false,
     max: 8,
     connectionTimeoutMillis: 8000,
-  });
+  };
+  return new Pool(config);
 }
 
 export async function getConnectedPool() {
   if (pool) return pool;
   if (connecting) return connecting;
   connecting = (async () => {
-    const urls = candidateUrls(getDatabaseUrl());
+    const base = parseDatabaseUrl(getDatabaseUrl());
     let lastError: Error | null = null;
-    for (const url of urls) {
-      const next = makePool(url);
+    for (const host of candidateHosts(base.host)) {
+      const next = makePool({ ...base, host });
       try {
         await next.query("SELECT 1");
+        console.info(`PostgreSQL connected via ${host}`);
         pool = next;
         return next;
       } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error));
+        console.error(`PostgreSQL ${host}: ${lastError.message}`);
         await next.end().catch(() => undefined);
       }
     }
-        throw lastError || new Error("Database connection unavailable.");
+    throw lastError || new Error("Database connection unavailable.");
   })();
   try {
     return await connecting;
@@ -84,7 +112,7 @@ export async function getConnectedPool() {
 
 export function getPool() {
   if (pool) return pool;
-  pool = makePool(getDatabaseUrl());
+  pool = makePool(parseDatabaseUrl(getDatabaseUrl()));
   return pool;
 }
 
