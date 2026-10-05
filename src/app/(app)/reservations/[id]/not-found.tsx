@@ -4,7 +4,7 @@ export default function ReservationNotFound() {
   return (
     <EmptyState
       title="Reservation not found"
-      description="It may have been deleted, or Google Sheets is still updating."
+      description="It may have been deleted."
       actionHref="/reservations"
       actionLabel="Back to reservations"
     />

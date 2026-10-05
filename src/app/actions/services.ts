@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { requireSession } from "@/lib/auth";
 import { serviceSchema } from "@/lib/validations";
 import { safeErrorMessage } from "@/lib/utils";
-import { createService, updateService } from "@/lib/sheets";
+import { createService, updateService } from "@/lib/db";
 
 export async function saveServiceAction(formData: FormData) {
   await requireSession();

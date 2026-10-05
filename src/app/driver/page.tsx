@@ -2,6 +2,7 @@ import { formatDisplayDate, formatDisplayTime, todayISO, tomorrowISO } from "@/l
 import { formatMoney } from "@/lib/money";
 import { requireDriverSession } from "@/lib/auth";
 import { getReservationsForDriver } from "@/lib/db/reservations";
+import { DriverAcceptButton } from "@/app/driver/accept-button";
 import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
@@ -15,13 +16,16 @@ export default async function DriverHomePage() {
   );
   const today = todayISO();
   const tomorrow = tomorrowISO();
+  const open = jobs.filter((item) => item.status !== "Completed");
+  const done = jobs.filter((item) => item.status === "Completed");
   const groups = [
-    { label: "Lyoum", items: jobs.filter((item) => item.date === today) },
-    { label: "Ghedda", items: jobs.filter((item) => item.date === tomorrow) },
+    { label: "Lyoum", items: open.filter((item) => item.date === today) },
+    { label: "Ghedda", items: open.filter((item) => item.date === tomorrow) },
     {
       label: "Mnb3d",
-      items: jobs.filter((item) => item.date > tomorrow),
+      items: open.filter((item) => item.date > tomorrow),
     },
+    { label: "Dart", items: done },
   ];
 
   return (
@@ -51,6 +55,13 @@ export default async function DriverHomePage() {
                     {formatMoney(job.commission || job.cost)}
                   </p>
                 </div>
+                {job.status === "Completed" ? (
+                  <p className="mt-3 text-center text-sm font-semibold text-emerald-700">
+                    Accepté — dart
+                  </p>
+                ) : (
+                  <DriverAcceptButton jobId={job.id} />
+                )}
               </article>
             ))
           )}

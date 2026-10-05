@@ -9,7 +9,7 @@ import {
   deleteReservation,
   updateReservation,
   updateReservationStatus,
-} from "@/lib/sheets";
+} from "@/lib/db";
 import { ReservationStatus } from "@/lib/types";
 
 function revalidateReservationViews() {

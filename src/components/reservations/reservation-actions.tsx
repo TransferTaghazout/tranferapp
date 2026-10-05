@@ -103,7 +103,7 @@ export function ReservationActions({
           <AlertDialogHeader>
             <AlertDialogTitle>Delete this reservation?</AlertDialogTitle>
             <AlertDialogDescription>
-              This permanently removes it from Google Sheets and the finance ledger.
+              This permanently removes it from the database and the finance ledger.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

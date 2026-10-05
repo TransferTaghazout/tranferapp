@@ -3,13 +3,13 @@
 import { revalidatePath } from "next/cache";
 import { requireSession } from "@/lib/auth";
 import { safeErrorMessage } from "@/lib/utils";
-import { ensureSpreadsheetStructure, seedDemoData, updateSettings } from "@/lib/sheets";
+import { ensureSchema, seedDemoData, updateSettings } from "@/lib/db";
 import { settingsSchema } from "@/lib/validations";
 
 export async function setupSheetsAction() {
   await requireSession();
   try {
-    const result = await ensureSpreadsheetStructure();
+    const result = await ensureSchema();
     revalidateAll();
     return {
       ok: true as const,

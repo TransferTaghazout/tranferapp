@@ -5,11 +5,11 @@ import {
   getCustomers,
   getSettings,
   getDrivers,
-  isSheetsConfigured,
-} from "@/lib/sheets";
+  isDatabaseConfigured,
+} from "@/lib/db";
 
 export async function loadWorkspace() {
-  if (!isSheetsConfigured()) {
+  if (!isDatabaseConfigured()) {
     return {
       configured: false as const,
       reservations: [] as Reservation[],

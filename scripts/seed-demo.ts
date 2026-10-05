@@ -1,5 +1,5 @@
 import { config } from "dotenv";
-import { seedDemoData } from "../src/lib/sheets/seed";
+import { seedDemoData } from "../src/lib/db";
 
 config({ path: ".env.local" });
 config({ path: ".env" });

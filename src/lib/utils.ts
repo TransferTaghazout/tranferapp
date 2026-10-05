@@ -18,10 +18,10 @@ export function safeErrorMessage(error: unknown, fallback: string) {
       error.message.includes("ECONNREFUSED") ||
       error.message.includes("unavailable")
     ) {
-      return "Google Sheets connection unavailable.";
+      return "Database connection unavailable.";
     }
     if (error.message.toLowerCase().includes("permission")) {
-      return "Google Sheets permission denied. Share the spreadsheet with the service account.";
+      return "Database permission denied.";
     }
   }
   return fallback;

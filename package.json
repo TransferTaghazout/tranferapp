@@ -7,7 +7,6 @@
     "build": "next build",
     "start": "next start --hostname 0.0.0.0 --port 3000",
     "lint": "eslint",
-    "setup-sheets": "npx tsx scripts/setup-sheets.ts",
     "seed": "npx tsx scripts/seed-demo.ts",
     "db:migrate": "npx tsx scripts/db-migrate.ts"
   },
@@ -21,7 +20,6 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",
-    "googleapis": "^164.1.0",
     "jose": "^6.1.0",
     "lucide-react": "^0.544.0",
     "next": "16.3.8",

@@ -41,3 +41,15 @@ export {
   updateDriver,
   authenticateDriver,
 } from "@/lib/db/drivers";
+
+export async function seedDemoData() {
+  const { ensureSchema, getPool } = await import("@/lib/db/client");
+  await ensureSchema();
+  const result = await getPool().query(
+    `SELECT table_name FROM information_schema.tables
+     WHERE table_schema = 'public' ORDER BY table_name`,
+  );
+  const tables = result.rows.map((row) => String(row.table_name)).join(", ");
+  return { seeded: true, message: tables ? `Database OK: ${tables}` : "Database connected, no tables yet." };
+}
+
