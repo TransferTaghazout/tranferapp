@@ -1,22 +1,21 @@
-import Link from "next/link";
-import { dbStatus } from "@/lib/db/client";
+import { ensureSchema, friendlyDbError } from "@/lib/db/client";
 
-export function ConnectionBanner() {
-  const status = dbStatus();
-  if (status.configured) return null;
-
-  return (
-    <div className="mb-5 rounded-[1.4rem] border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">
-      Database ma connectatch. Zid{" "}
-      <code className="font-semibold">DATABASE_URL</code> f environment.
-      {status.missing.length > 0 ? (
-        <span className="mt-1 block text-amber-800">
-          Missing: {status.missing.join(", ")}
+export async function ConnectionBanner() {
+  try {
+    await ensureSchema();
+    return null;
+  } catch (error) {
+    const message =
+      error instanceof Error ? friendlyDbError(error) : "Database connection unavailable.";
+    return (
+      <div className="mb-5 rounded-[1.4rem] border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">
+        {message}
+        <span className="mt-2 block text-amber-800">
+          F EasyPanel: Environment → zid{" "}
+          <code className="font-semibold">DATABASE_URL</code> = connection dyal Postgres
+          (nafs project: transfer / mytransferapp).
         </span>
-      ) : null}{" "}
-      <Link href="/more" className="font-semibold underline">
-        More
-      </Link>
-    </div>
-  );
+      </div>
+    );
+  }
 }

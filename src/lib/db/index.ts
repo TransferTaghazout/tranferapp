@@ -44,9 +44,10 @@ export {
 } from "@/lib/db/drivers";
 
 export async function seedDemoData() {
-  const { ensureSchema, getPool } = await import("@/lib/db/client");
+  const { ensureSchema, getConnectedPool } = await import("@/lib/db/client");
   await ensureSchema();
-  const result = await getPool().query(
+  const pool = await getConnectedPool();
+  const result = await pool.query(
     `SELECT table_name FROM information_schema.tables
      WHERE table_schema = 'public' ORDER BY table_name`,
   );

@@ -2,28 +2,110 @@ import { Pool } from "pg";
 
 let pool: Pool | null = null;
 let schemaReady = false;
+let connecting: Promise<Pool> | null = null;
+
+const DEFAULT_DATABASE_URL =
+  "postgres://ahmad:ahmad123@transfer_mytransferapp:5432/transferapp?sslmode=disable";
 
 export function getDatabaseUrl() {
-  return process.env.DATABASE_URL || "";
+  if (process.env.DATABASE_URL) return process.env.DATABASE_URL;
+  const host = process.env.POSTGRES_HOST || process.env.DB_HOST;
+  const user = process.env.POSTGRES_USER || process.env.DB_USER;
+  const password = process.env.POSTGRES_PASSWORD || process.env.DB_PASSWORD;
+  const database = process.env.POSTGRES_DB || process.env.DB_NAME;
+  const port = process.env.POSTGRES_PORT || process.env.DB_PORT || "5432";
+  if (host && user && password && database) {
+    return `postgres://${encodeURIComponent(user)}:${encodeURIComponent(password)}@${host}:${port}/${database}?sslmode=disable`;
+  }
+  return DEFAULT_DATABASE_URL;
 }
 
 export function isDatabaseConfigured() {
   return Boolean(getDatabaseUrl());
 }
 
+function candidateUrls(raw: string) {
+  const urls = [raw];
+  try {
+    const parsed = new URL(raw);
+    const host = parsed.hostname;
+    const extras = new Set<string>();
+    if (host.includes("_")) extras.add(host.split("_").slice(1).join("_"));
+    extras.add(host.replace(/_/g, "-"));
+    extras.add("mytransferapp");
+    extras.add("transfer_mytransferapp");
+    for (const extra of extras) {
+      if (!extra || extra === host) continue;
+      const next = new URL(raw);
+      next.hostname = extra;
+      urls.push(next.toString());
+    }
+  } catch {
+    /* keep original */
+  }
+  return [...new Set(urls)];
+}
+
+function makePool(connectionString: string) {
+  return new Pool({
+    connectionString,
+    ssl: connectionString.includes("sslmode=require") ? { rejectUnauthorized: false } : false,
+    max: 8,
+    connectionTimeoutMillis: 8000,
+  });
+}
+
+export async function getConnectedPool() {
+  if (pool) return pool;
+  if (connecting) return connecting;
+  connecting = (async () => {
+    const urls = candidateUrls(getDatabaseUrl());
+    let lastError: Error | null = null;
+    for (const url of urls) {
+      const next = makePool(url);
+      try {
+        await next.query("SELECT 1");
+        pool = next;
+        return next;
+      } catch (error) {
+        lastError = error instanceof Error ? error : new Error(String(error));
+        await next.end().catch(() => undefined);
+      }
+    }
+        throw lastError || new Error("Database connection unavailable.");
+  })();
+  try {
+    return await connecting;
+  } catch (error) {
+    connecting = null;
+    throw error;
+  }
+}
+
 export function getPool() {
-  if (!isDatabaseConfigured()) {
-    throw new Error("Database connection unavailable.");
-  }
-  if (!pool) {
-    pool = new Pool({
-      connectionString: getDatabaseUrl(),
-      ssl: getDatabaseUrl().includes("sslmode=require") ? { rejectUnauthorized: false } : false,
-      max: 8,
-      connectionTimeoutMillis: 5000,
-    });
-  }
+  if (pool) return pool;
+  pool = makePool(getDatabaseUrl());
   return pool;
+}
+
+export function friendlyDbError(error: Error | null) {
+  const message = error?.message || "Database connection unavailable.";
+  if (message.includes("ENOTFOUND") || message.includes("getaddrinfo")) {
+    return "Database host ma lqahch. F EasyPanel: App w Postgres khasshom nafs project, w zid DATABASE_URL f Environment.";
+  }
+  if (message.includes("ECONNREFUSED")) {
+    return "Postgres rfid l-connection. Chouf service dyal database khddam.";
+  }
+  if (message.toLowerCase().includes("password") || message.includes("28P01")) {
+    return "User/password dyal database ghalat.";
+  }
+  if (message.includes("timeout")) {
+    return "Database timeout. App ma qdersh ywsal l Postgres.";
+  }
+  if (message.includes("does not exist")) {
+    return "Database transferapp ma kaynach. Create database transferapp.";
+  }
+  return "Database connection unavailable.";
 }
 
 export async function query<T extends Record<string, unknown> = Record<string, unknown>>(
@@ -31,7 +113,7 @@ export async function query<T extends Record<string, unknown> = Record<string, u
   params: unknown[] = [],
 ) {
   await ensureSchema();
-  const result = await getPool().query(text, params);
+  const result = await (await getConnectedPool()).query(text, params);
   return result.rows as T[];
 }
 
@@ -132,7 +214,7 @@ ALTER TABLE reservations ADD COLUMN IF NOT EXISTS driver_commission NUMERIC NOT 
 
 export async function ensureSchema() {
   if (schemaReady) return { created: [] as string[] };
-  const client = getPool();
+  const client = await getConnectedPool();
   await client.query(SCHEMA_SQL);
   await client.query(
     `INSERT INTO settings (id, business_name, currency, timezone, default_currency, whatsapp_country_code, driver_whatsapp)
@@ -146,6 +228,6 @@ export async function ensureSchema() {
 export function dbStatus() {
   return {
     configured: isDatabaseConfigured(),
-    missing: !process.env.DATABASE_URL ? ["DATABASE_URL"] : [],
+    missing: [] as string[],
   };
 }

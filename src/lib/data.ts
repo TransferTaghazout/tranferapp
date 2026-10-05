@@ -5,22 +5,10 @@ import {
   getCustomers,
   getSettings,
   getDrivers,
-  isDatabaseConfigured,
 } from "@/lib/db";
+import { friendlyDbError } from "@/lib/db/client";
 
 export async function loadWorkspace() {
-  if (!isDatabaseConfigured()) {
-    return {
-      configured: false as const,
-      reservations: [] as Reservation[],
-      services: [],
-      customers: [],
-      drivers: [] as Driver[],
-      settings: DEFAULT_SETTINGS,
-      error: "Database connection unavailable.",
-    };
-  }
-
   try {
     const [reservations, services, customers, drivers, settings] = await Promise.all([
       getReservations(),
@@ -38,7 +26,7 @@ export async function loadWorkspace() {
       settings,
       error: null as string | null,
     };
-  } catch {
+  } catch (error) {
     return {
       configured: false as const,
       reservations: [] as Reservation[],
@@ -46,7 +34,8 @@ export async function loadWorkspace() {
       customers: [],
       drivers: [] as Driver[],
       settings: DEFAULT_SETTINGS,
-      error: "Database connection unavailable.",
+      error:
+        error instanceof Error ? friendlyDbError(error) : "Database connection unavailable.",
     };
   }
 }

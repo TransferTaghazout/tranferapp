@@ -1,17 +1,14 @@
 import { config } from "dotenv";
-import { ensureSchema, getDatabaseUrl, getPool, isDatabaseConfigured } from "../src/lib/db/client";
+import { ensureSchema, getConnectedPool, getDatabaseUrl } from "../src/lib/db/client";
 
 config({ path: ".env.local" });
 config({ path: ".env" });
 
 async function main() {
-  if (!isDatabaseConfigured()) {
-    throw new Error("DATABASE_URL is missing.");
-  }
   const url = new URL(getDatabaseUrl());
   console.log(`Connecting to ${url.hostname}:${url.port || "5432"} / ${url.pathname.replace("/", "")}`);
   await ensureSchema();
-  const pool = getPool();
+  const pool = await getConnectedPool();
   const tables = await pool.query(
     `SELECT table_name FROM information_schema.tables
      WHERE table_schema = 'public' ORDER BY table_name`,
