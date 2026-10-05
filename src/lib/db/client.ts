@@ -85,12 +85,10 @@ export async function getConnectedPool() {
       const next = makePool({ ...base, host });
       try {
         await next.query("SELECT 1");
-        console.info(`PostgreSQL connected via ${host}`);
         pool = next;
         return next;
       } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error));
-        console.error(`PostgreSQL ${host}: ${lastError.message}`);
         await next.end().catch(() => undefined);
       }
     }
@@ -113,7 +111,7 @@ export function getPool() {
 export function friendlyDbError(error: Error | null) {
   const message = error?.message || "Database connection unavailable.";
   if (message.includes("ENOTFOUND") || message.includes("getaddrinfo")) {
-    return "Database host ma lqahch. F EasyPanel: App w Postgres khasshom nafs project, w zid DATABASE_URL f Environment.";
+    return "Postgres Internal Hostname ma khdemch. F EasyPanel Postgres copy External host/IP, w zid DATABASE_URL b dak IP.";
   }
   if (message.includes("ECONNREFUSED")) {
     return "Postgres rfid l-connection. Chouf service dyal database khddam.";
