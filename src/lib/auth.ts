@@ -4,12 +4,12 @@ import { SignJWT, jwtVerify } from "jose";
 const COOKIE_NAME = "trm_session";
 const MAX_AGE = 60 * 60 * 24 * 14;
 
+const ADMIN_LOGIN = "ahmadabidar";
+const ADMIN_PASSWORD = "Taghazout@1998";
+const AUTH_SECRET = process.env.AUTH_SECRET || "atlas-coast-transfer-auth-secret";
+
 function secretKey() {
-  const secret = process.env.AUTH_SECRET;
-  if (!secret) {
-    throw new Error("AUTH_SECRET is not configured.");
-  }
-  return new TextEncoder().encode(secret);
+  return new TextEncoder().encode(AUTH_SECRET);
 }
 
 export type SessionUser =
@@ -17,20 +17,11 @@ export type SessionUser =
   | { role: "driver"; email: string; driverId: string; name: string };
 
 export function isAuthConfigured() {
-  return Boolean(
-    process.env.ADMIN_EMAIL &&
-      process.env.ADMIN_PASSWORD &&
-      process.env.AUTH_SECRET,
-  );
+  return true;
 }
 
-export function verifyCredentials(email: string, password: string) {
-  const expectedEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
-  const expectedPassword = process.env.ADMIN_PASSWORD;
-  return (
-    email.trim().toLowerCase() === expectedEmail &&
-    password === expectedPassword
-  );
+export function verifyCredentials(login: string, password: string) {
+  return login.trim().toLowerCase() === ADMIN_LOGIN && password === ADMIN_PASSWORD;
 }
 
 export async function createSession(user: SessionUser) {
@@ -44,7 +35,7 @@ export async function createSession(user: SessionUser) {
   store.set(COOKIE_NAME, token, {
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure: process.env.AUTH_COOKIE_SECURE === "true",
     path: "/",
     maxAge: MAX_AGE,
   });

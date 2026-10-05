@@ -2,7 +2,7 @@ import { loginAction } from "@/app/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { getSession, isAuthConfigured } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
@@ -39,11 +39,6 @@ export default async function LoginPage({
           }}
           className="rounded-[1.8rem] bg-card p-6 shadow-2xl"
         >
-          {!isAuthConfigured() ? (
-            <p className="mb-4 rounded-2xl bg-amber-50 px-3 py-2 text-sm text-amber-900">
-              Set ADMIN_EMAIL, ADMIN_PASSWORD and AUTH_SECRET in your environment.
-            </p>
-          ) : null}
           {params.error ? (
             <p className="mb-4 rounded-2xl bg-rose-50 px-3 py-2 text-sm text-rose-800">
               {params.error}
@@ -51,14 +46,13 @@ export default async function LoginPage({
           ) : null}
           <div className="grid gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">Login</Label>
               <Input
                 id="email"
                 name="email"
-                type="email"
                 required
                 autoComplete="username"
-                placeholder="admin@atlascoast.travel"
+                placeholder="ahmadabidar"
               />
             </div>
             <div className="grid gap-2">

@@ -81,10 +81,7 @@ export const settingsSchema = z.object({
 });
 
 export const loginSchema = z.object({
-  email: z
-    .string()
-    .trim()
-    .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Enter a valid email"),
+  email: z.string().trim().min(1, "Login khass"),
   password: z.string().min(1, "Password is required"),
 });
 

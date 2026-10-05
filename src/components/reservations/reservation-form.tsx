@@ -12,15 +12,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 
 const TYPES: ServiceType[] = ["Transfer", "Activity", "Tour", "Other"];
-const PLACES = [
-  "Agadir Airport",
-  "Taghazout",
-  "Taghazout Bay",
-  "Agadir Centre",
-  "Paradise Valley",
-  "Timlaline",
-];
-const TIMES = ["08:00", "09:00", "10:00", "11:30", "14:00", "16:00", "18:00"];
 
 export function ReservationForm({
   reservation,
@@ -43,9 +34,6 @@ export function ReservationForm({
   const [commission, setCommission] = useState(
     String(reservation?.commission ?? reservation?.cost ?? ""),
   );
-  const [pickup, setPickup] = useState(reservation?.pickupLocation || "");
-  const [destination, setDestination] = useState(reservation?.destination || "");
-  const [time, setTime] = useState(reservation?.time || defaultTime);
   const [driverId, setDriverId] = useState(reservation?.driverId || "");
 
   const profit = useMemo(
@@ -74,9 +62,6 @@ export function ReservationForm({
       <input type="hidden" name="paymentStatus" value={reservation?.paymentStatus || "Unpaid"} />
       <input type="hidden" name="type" value={type} />
       <input type="hidden" name="serviceName" value={type} />
-      <input type="hidden" name="pickupLocation" value={pickup} />
-      <input type="hidden" name="destination" value={destination} />
-      <input type="hidden" name="time" value={time} />
       <input type="hidden" name="driverId" value={driverId} />
       <input type="hidden" name="numberOfPeople" value="1" />
 
@@ -94,15 +79,13 @@ export function ReservationForm({
           required
           defaultValue={reservation?.date || defaultDate}
         />
-        <Input type="time" required value={time} onChange={(e) => setTime(e.target.value)} />
+        <Input
+          name="time"
+          type="time"
+          required
+          defaultValue={reservation?.time || defaultTime}
+        />
       </div>
-      <ChipRow>
-        {TIMES.map((slot) => (
-          <Chip key={slot} active={time === slot} onClick={() => setTime(slot)}>
-            {slot}
-          </Chip>
-        ))}
-      </ChipRow>
 
       <div className="grid grid-cols-4 gap-2">
         {TYPES.map((item) => (
@@ -120,8 +103,16 @@ export function ReservationForm({
         ))}
       </div>
 
-      <PlaceField label="Pickup" value={pickup} onChange={setPickup} />
-      <PlaceField label="Destination" value={destination} onChange={setDestination} />
+      <Input
+        name="pickupLocation"
+        defaultValue={reservation?.pickupLocation}
+        placeholder="Pickup"
+      />
+      <Input
+        name="destination"
+        defaultValue={reservation?.destination}
+        placeholder="Destination"
+      />
 
       <Textarea
         name="description"
@@ -177,55 +168,5 @@ export function ReservationForm({
         </Button>
       </div>
     </form>
-  );
-}
-
-function PlaceField({
-  label,
-  value,
-  onChange,
-}: {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-}) {
-  return (
-    <div className="space-y-2">
-      <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder={label} />
-      <ChipRow>
-        {PLACES.map((place) => (
-          <Chip key={place} active={value === place} onClick={() => onChange(place)}>
-            {place}
-          </Chip>
-        ))}
-      </ChipRow>
-    </div>
-  );
-}
-
-function ChipRow({ children }: { children: React.ReactNode }) {
-  return <div className="flex gap-2 overflow-x-auto pb-1">{children}</div>;
-}
-
-function Chip({
-  active,
-  onClick,
-  children,
-}: {
-  active?: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={cn(
-        "h-10 shrink-0 rounded-full px-3 text-sm font-semibold",
-        active ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground",
-      )}
-    >
-      {children}
-    </button>
   );
 }

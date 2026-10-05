@@ -15,7 +15,7 @@ export async function loginAction(_: { error?: string } | undefined, formData: F
   }
 
   if (!verifyCredentials(parsed.data.email, parsed.data.password)) {
-    return { error: "Incorrect email or password." };
+    return { error: "Login ou password ghalat." };
   }
 
   await createSession({ role: "admin", email: parsed.data.email.trim().toLowerCase() });
