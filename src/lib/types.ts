@@ -16,6 +16,14 @@ export type PaymentStatus = (typeof PAYMENT_STATUSES)[number];
 export const BOOKING_SOURCES = ["APP", "DEMO", "PHONE", "WHATSAPP", "WALK_IN"] as const;
 export type BookingSource = (typeof BOOKING_SOURCES)[number];
 
+export interface Driver {
+  id: string;
+  name: string;
+  phone: string;
+  email: string;
+  active: boolean;
+}
+
 export interface Reservation {
   id: string;
   createdAt: string;
@@ -38,6 +46,11 @@ export interface Reservation {
   description: string;
   internalNotes: string;
   driver: string;
+  driverId: string;
+  driverName: string;
+  driverPhone: string;
+  driverEmail: string;
+  commission: number;
   vehicle: string;
   flightNumber: string;
   bookingSource: string;

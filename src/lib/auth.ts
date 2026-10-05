@@ -12,9 +12,9 @@ function secretKey() {
   return new TextEncoder().encode(secret);
 }
 
-export interface SessionUser {
-  email: string;
-}
+export type SessionUser =
+  | { role: "admin"; email: string }
+  | { role: "driver"; email: string; driverId: string; name: string };
 
 export function isAuthConfigured() {
   return Boolean(
@@ -34,7 +34,7 @@ export function verifyCredentials(email: string, password: string) {
 }
 
 export async function createSession(user: SessionUser) {
-  const token = await new SignJWT({ email: user.email })
+  const token = await new SignJWT(user)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime(`${MAX_AGE}s`)
@@ -62,8 +62,16 @@ export async function getSession(): Promise<SessionUser | null> {
 
   try {
     const { payload } = await jwtVerify(token, secretKey());
+    if (payload.role === "driver" && typeof payload.driverId === "string") {
+      return {
+        role: "driver",
+        email: String(payload.email || ""),
+        driverId: payload.driverId,
+        name: String(payload.name || ""),
+      };
+    }
     const email = typeof payload.email === "string" ? payload.email : null;
-    return email ? { email } : null;
+    return email ? { role: "admin", email } : null;
   } catch {
     return null;
   }
@@ -71,7 +79,15 @@ export async function getSession(): Promise<SessionUser | null> {
 
 export async function requireSession() {
   const session = await getSession();
-  if (!session) {
+  if (!session || session.role !== "admin") {
+    throw new Error("Unauthorized");
+  }
+  return session;
+}
+
+export async function requireDriverSession() {
+  const session = await getSession();
+  if (!session || session.role !== "driver") {
     throw new Error("Unauthorized");
   }
   return session;

@@ -12,7 +12,7 @@ import { driverWhatsAppMessage, tomorrowJobs } from "@/lib/briefing";
 import { formatLongDate, todayISO, tomorrowISO } from "@/lib/dates";
 import { formatMoney } from "@/lib/money";
 import { whatsappShareLink } from "@/lib/phone";
-import { summarizeReservations } from "@/lib/sheets/finance";
+import { summarizeReservations } from "@/lib/db/finance";
 import { loadWorkspace } from "@/lib/data";
 import { TIMEZONE } from "@/lib/types";
 
@@ -30,11 +30,30 @@ export default async function TodayPage() {
   };
   const tomorrowDate = tomorrowISO();
   const tomorrow = tomorrowJobs(reservations);
-  const shareHref = whatsappShareLink(
-    driverWhatsAppMessage(reservations),
-    settings.driverWhatsApp,
-    settings.whatsappCountryCode,
+  const driverShares = Array.from(
+    new Map(
+      tomorrow
+        .filter((job) => job.driverId && job.driverPhone)
+        .map((job) => [
+          job.driverId,
+          {
+            href: whatsappShareLink(
+              driverWhatsAppMessage(reservations, job.driverId),
+              job.driverPhone,
+              settings.whatsappCountryCode,
+            ),
+            label: `WhatsApp ${job.driverName}`,
+          },
+        ]),
+    ).values(),
   );
+  const shareHref =
+    driverShares[0]?.href ||
+    whatsappShareLink(
+      driverWhatsAppMessage(reservations),
+      settings.driverWhatsApp,
+      settings.whatsappCountryCode,
+    );
   const afterSeven =
     Number(formatInTimeZone(new Date(), TIMEZONE, "H")) >= 19;
 
@@ -71,6 +90,7 @@ export default async function TodayPage() {
         date={tomorrowDate}
         jobs={tomorrow}
         shareHref={shareHref}
+        shares={driverShares.slice(1)}
         highlight={afterSeven}
       />
 

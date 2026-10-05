@@ -19,6 +19,8 @@ function revalidateReservationViews() {
   revalidatePath("/finance");
   revalidatePath("/customers");
   revalidatePath("/search");
+  revalidatePath("/drivers");
+  revalidatePath("/driver");
 }
 
 export async function saveReservationAction(formData: FormData) {
@@ -36,13 +38,15 @@ export async function saveReservationAction(formData: FormData) {
     pickupLocation: formData.get("pickupLocation") || "",
     destination: formData.get("destination") || "",
     price: formData.get("price"),
-    cost: formData.get("cost") || 0,
+    cost: formData.get("commission") || formData.get("cost") || 0,
+    commission: formData.get("commission") || formData.get("cost") || 0,
     currency: formData.get("currency") || "MAD",
     status: formData.get("status"),
     paymentStatus: formData.get("paymentStatus"),
     description: formData.get("description") || "",
     internalNotes: formData.get("internalNotes") || "",
     driver: formData.get("driver") || "",
+    driverId: formData.get("driverId") || "",
     vehicle: formData.get("vehicle") || "",
     flightNumber: formData.get("flightNumber") || "",
     bookingSource: formData.get("bookingSource") || "APP",

@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 
-const PUBLIC_PATHS = ["/login", "/manifest.webmanifest", "/sw.js", "/offline"];
+const PUBLIC_PATHS = [
+  "/login",
+  "/driver/login",
+  "/manifest.webmanifest",
+  "/sw.js",
+  "/offline",
+];
 
 function isPublic(pathname: string) {
   return (
@@ -26,7 +32,14 @@ export async function proxy(request: NextRequest) {
   }
 
   try {
-    await jwtVerify(token, new TextEncoder().encode(secret));
+    const { payload } = await jwtVerify(token, new TextEncoder().encode(secret));
+    const role = payload.role === "driver" ? "driver" : "admin";
+    if (role === "driver" && !pathname.startsWith("/driver")) {
+      return NextResponse.redirect(new URL("/driver", request.url));
+    }
+    if (role === "admin" && pathname.startsWith("/driver") && pathname !== "/driver/login") {
+      return NextResponse.next();
+    }
     return NextResponse.next();
   } catch {
     const response = NextResponse.redirect(new URL("/login", request.url));

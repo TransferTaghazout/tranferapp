@@ -1,9 +1,10 @@
-import { DEFAULT_SETTINGS, Reservation, Settings } from "@/lib/types";
+import { DEFAULT_SETTINGS, Driver, Reservation, Settings } from "@/lib/types";
 import {
   getReservations,
   getServices,
   getCustomers,
   getSettings,
+  getDrivers,
   isSheetsConfigured,
 } from "@/lib/sheets";
 
@@ -14,16 +15,18 @@ export async function loadWorkspace() {
       reservations: [] as Reservation[],
       services: [],
       customers: [],
+      drivers: [] as Driver[],
       settings: DEFAULT_SETTINGS,
-      error: "Google Sheets connection unavailable.",
+      error: "Database connection unavailable.",
     };
   }
 
   try {
-    const [reservations, services, customers, settings] = await Promise.all([
+    const [reservations, services, customers, drivers, settings] = await Promise.all([
       getReservations(),
       getServices(),
       getCustomers(),
+      getDrivers(),
       getSettings().catch(() => DEFAULT_SETTINGS as Settings),
     ]);
     return {
@@ -31,6 +34,7 @@ export async function loadWorkspace() {
       reservations,
       services,
       customers,
+      drivers,
       settings,
       error: null as string | null,
     };
@@ -40,8 +44,9 @@ export async function loadWorkspace() {
       reservations: [] as Reservation[],
       services: [],
       customers: [],
+      drivers: [] as Driver[],
       settings: DEFAULT_SETTINGS,
-      error: "Google Sheets connection unavailable.",
+      error: "Database connection unavailable.",
     };
   }
 }

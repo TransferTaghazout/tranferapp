@@ -5,7 +5,7 @@ import { PaymentBadge, StatusBadge } from "@/components/shared/status-badge";
 import { formatDateTime, formatDisplayDate } from "@/lib/dates";
 import { formatMoney } from "@/lib/money";
 import { loadWorkspace } from "@/lib/data";
-import { customerReservations } from "@/lib/sheets/customers";
+import { customerReservations } from "@/lib/db/customers";
 
 export default async function ReservationDetailPage({
   params,
@@ -24,10 +24,11 @@ export default async function ReservationDetailPage({
 
   const rows = [
     ["Name", reservation.customerName],
+    ["Driver", reservation.driverName || reservation.driver || "—"],
     ["Pickup", reservation.pickupLocation || "—"],
     ["Destination", reservation.destination || "—"],
-    ["Price", formatMoney(reservation.price)],
-    ["Cost", formatMoney(reservation.cost)],
+    ["Price client", formatMoney(reservation.price)],
+    ["Commission driver", formatMoney(reservation.commission || reservation.cost)],
     ["Profit", formatMoney(reservation.profit)],
   ];
 

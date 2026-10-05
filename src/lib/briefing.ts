@@ -13,9 +13,11 @@ export function tomorrowJobs(reservations: Reservation[]) {
     .sort((a, b) => a.time.localeCompare(b.time));
 }
 
-export function driverWhatsAppMessage(reservations: Reservation[]) {
-  const jobs = tomorrowJobs(reservations);
+export function driverWhatsAppMessage(reservations: Reservation[], driverId?: string) {
   const date = tomorrowISO();
+  const jobs = tomorrowJobs(reservations).filter((job) =>
+    driverId ? job.driverId === driverId : true,
+  );
   const header = `سلام خويا 👋\nKhedma dyal ghedda — ${formatDisplayDate(date)}\n`;
 
   if (jobs.length === 0) {
@@ -33,6 +35,7 @@ export function driverWhatsAppMessage(reservations: Reservation[]) {
       route,
       job.type,
       job.description,
+      `Taman service: ${job.commission || job.cost} DH`,
     ]
       .filter(Boolean)
       .join("\n");

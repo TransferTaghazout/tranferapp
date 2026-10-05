@@ -19,10 +19,10 @@ export function SetupActions() {
   return (
     <div className="grid gap-3 sm:grid-cols-2">
       <Button disabled={pending} onClick={() => run("setup")}>
-        Prepare Google Sheets tabs
+        Prepare database
       </Button>
       <Button variant="secondary" disabled={pending} onClick={() => run("seed")}>
-        Load demo reservations
+        Check database tables
       </Button>
     </div>
   );

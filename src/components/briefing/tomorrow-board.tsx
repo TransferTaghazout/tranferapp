@@ -7,11 +7,13 @@ export function TomorrowBoard({
   date,
   jobs,
   shareHref,
+  shares = [],
   highlight,
 }: {
   date: string;
   jobs: Reservation[];
   shareHref: string;
+  shares?: { href: string; label: string }[];
   highlight?: boolean;
 }) {
   return (
@@ -30,6 +32,9 @@ export function TomorrowBoard({
         </p>
       </div>
       <ShareTomorrowButton href={shareHref} />
+      {shares.map((share) => (
+        <ShareTomorrowButton key={share.href} href={share.href} label={share.label} />
+      ))}
       {jobs.length === 0 ? (
         <p className="text-sm text-muted-foreground">Ma kayn hatta service ghedda.</p>
       ) : (

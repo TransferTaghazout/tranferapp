@@ -21,12 +21,14 @@ export const reservationSchema = z.object({
   destination: z.string().trim().optional().default(""),
   price: moneyField,
   cost: moneyField.optional().default(0),
+  commission: moneyField.optional().default(0),
   currency: z.string().optional().default("MAD"),
   status: z.enum(RESERVATION_STATUSES),
   paymentStatus: z.enum(PAYMENT_STATUSES),
   description: z.string().optional().default(""),
   internalNotes: z.string().optional().default(""),
   driver: z.string().trim().optional().default(""),
+  driverId: z.string().trim().optional().default(""),
   vehicle: z.string().trim().optional().default(""),
   flightNumber: z.string().trim().optional().default(""),
   bookingSource: z.string().optional().default("APP"),
@@ -45,6 +47,17 @@ export const serviceSchema = z.object({
 });
 
 export type ServiceInput = z.infer<typeof serviceSchema>;
+
+export const driverSchema = z.object({
+  id: z.string().optional(),
+  name: z.string().trim().min(1, "Smiya khassha"),
+  phone: z.string().trim().min(6, "Telephone khass"),
+  email: z.string().trim().optional().default(""),
+  password: z.string().optional().default(""),
+  active: z.coerce.boolean().optional().default(true),
+});
+
+export type DriverInput = z.infer<typeof driverSchema>;
 
 export const customerSchema = z.object({
   id: z.string().optional(),

@@ -4,7 +4,7 @@ import { ReservationTable } from "@/components/reservations/reservation-table";
 import { formatDisplayDate } from "@/lib/dates";
 import { formatMoney } from "@/lib/money";
 import { loadWorkspace } from "@/lib/data";
-import { customerReservations } from "@/lib/sheets/customers";
+import { customerReservations } from "@/lib/db/customers";
 
 export default async function CustomerDetailPage({
   params,

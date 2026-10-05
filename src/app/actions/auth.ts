@@ -18,7 +18,7 @@ export async function loginAction(_: { error?: string } | undefined, formData: F
     return { error: "Incorrect email or password." };
   }
 
-  await createSession({ email: parsed.data.email.trim().toLowerCase() });
+  await createSession({ role: "admin", email: parsed.data.email.trim().toLowerCase() });
   redirect("/");
 }
 

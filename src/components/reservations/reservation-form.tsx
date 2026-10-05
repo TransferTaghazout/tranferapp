@@ -3,7 +3,7 @@
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Reservation, ServiceType } from "@/lib/types";
+import { Driver, Reservation, ServiceType } from "@/lib/types";
 import { calculateProfit, formatMoney } from "@/lib/money";
 import { saveReservationAction } from "@/app/actions/reservations";
 import { Button } from "@/components/ui/button";
@@ -24,6 +24,7 @@ const TIMES = ["08:00", "09:00", "10:00", "11:30", "14:00", "16:00", "18:00"];
 
 export function ReservationForm({
   reservation,
+  drivers = [],
   defaultDate,
   defaultTime,
 }: {
@@ -31,6 +32,7 @@ export function ReservationForm({
   services?: unknown;
   customers?: unknown;
   recognizedCustomer?: unknown;
+  drivers?: Driver[];
   defaultDate: string;
   defaultTime: string;
 }) {
@@ -38,14 +40,17 @@ export function ReservationForm({
   const [pending, startTransition] = useTransition();
   const [type, setType] = useState<ServiceType>(reservation?.type || "Transfer");
   const [price, setPrice] = useState(String(reservation?.price ?? ""));
-  const [cost, setCost] = useState(String(reservation?.cost ?? ""));
+  const [commission, setCommission] = useState(
+    String(reservation?.commission ?? reservation?.cost ?? ""),
+  );
   const [pickup, setPickup] = useState(reservation?.pickupLocation || "");
   const [destination, setDestination] = useState(reservation?.destination || "");
   const [time, setTime] = useState(reservation?.time || defaultTime);
+  const [driverId, setDriverId] = useState(reservation?.driverId || "");
 
   const profit = useMemo(
-    () => calculateProfit(Number(price || 0), Number(cost || 0)),
-    [price, cost],
+    () => calculateProfit(Number(price || 0), Number(commission || 0)),
+    [price, commission],
   );
 
   function onSubmit(formData: FormData) {
@@ -72,6 +77,7 @@ export function ReservationForm({
       <input type="hidden" name="pickupLocation" value={pickup} />
       <input type="hidden" name="destination" value={destination} />
       <input type="hidden" name="time" value={time} />
+      <input type="hidden" name="driverId" value={driverId} />
       <input type="hidden" name="numberOfPeople" value="1" />
 
       <Input
@@ -123,6 +129,21 @@ export function ReservationForm({
         placeholder="Description"
       />
 
+      <select
+        value={driverId}
+        onChange={(e) => setDriverId(e.target.value)}
+        className="h-12 rounded-2xl border border-input bg-card px-4"
+      >
+        <option value="">Driver — khter</option>
+        {drivers
+          .filter((driver) => driver.active || driver.id === reservation?.driverId)
+          .map((driver) => (
+            <option key={driver.id} value={driver.id}>
+              {driver.name} · {driver.phone}
+            </option>
+          ))}
+      </select>
+
       <div className="grid grid-cols-2 gap-3">
         <Input
           name="price"
@@ -131,17 +152,20 @@ export function ReservationForm({
           required
           value={price}
           onChange={(e) => setPrice(e.target.value)}
-          placeholder="Price"
+          placeholder="Price client"
         />
         <Input
-          name="cost"
+          name="commission"
           type="number"
           min={0}
-          value={cost}
-          onChange={(e) => setCost(e.target.value)}
-          placeholder="Cost"
+          value={commission}
+          onChange={(e) => setCommission(e.target.value)}
+          placeholder="Commission driver"
         />
       </div>
+      <p className="text-xs text-muted-foreground">
+        Driver kaychouf ghi commission b7al taman service.
+      </p>
       <div className="rounded-2xl bg-primary px-4 py-3 text-primary-foreground">
         <p className="text-xs uppercase tracking-wider text-white/70">Profit</p>
         <p className="font-display text-3xl">{formatMoney(profit)}</p>

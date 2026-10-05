@@ -9,7 +9,7 @@ export default async function NewReservationPage({
   searchParams: Promise<{ date?: string; phone?: string }>;
 }) {
   const params = await searchParams;
-  const { services, customers, settings } = await loadWorkspace();
+  const { services, customers, drivers, settings } = await loadWorkspace();
   const phone = params.phone ?? "";
   const recognized = phone
     ? customers.find((c) =>
@@ -29,6 +29,7 @@ export default async function NewReservationPage({
         services={services.filter((s) => s.active)}
         customers={customers}
         recognizedCustomer={recognized}
+        drivers={drivers}
         defaultDate={params.date || todayISO()}
         defaultTime={currentTime(settings.timezone)}
       />

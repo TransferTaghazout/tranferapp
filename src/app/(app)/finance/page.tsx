@@ -8,7 +8,7 @@ import {
   financeByServiceName,
   financeByServiceType,
   summarizeReservations,
-} from "@/lib/sheets/finance";
+} from "@/lib/db/finance";
 import { SERVICE_TYPES, ServiceType } from "@/lib/types";
 
 export default async function FinancePage({

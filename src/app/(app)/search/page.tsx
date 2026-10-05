@@ -2,7 +2,7 @@ import { ReservationCard } from "@/components/reservations/reservation-card";
 import { ReservationTable } from "@/components/reservations/reservation-table";
 import { EmptyState } from "@/components/shared/empty-state";
 import { loadWorkspace } from "@/lib/data";
-import { matchesSearch } from "@/lib/sheets/reservations";
+import { matchesSearch } from "@/lib/db/reservations";
 
 export default async function SearchPage({
   searchParams,

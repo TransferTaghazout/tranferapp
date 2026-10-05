@@ -3,9 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { requireSession } from "@/lib/auth";
 import { safeErrorMessage } from "@/lib/utils";
-import { ensureSpreadsheetStructure, seedDemoData } from "@/lib/sheets";
+import { ensureSpreadsheetStructure, seedDemoData, updateSettings } from "@/lib/sheets";
 import { settingsSchema } from "@/lib/validations";
-import { updateSettings } from "@/lib/sheets/settings";
 
 export async function setupSheetsAction() {
   await requireSession();
@@ -16,13 +15,13 @@ export async function setupSheetsAction() {
       ok: true as const,
       message:
         result.created.length > 0
-          ? `Created tabs: ${result.created.join(", ")}.`
-          : "Spreadsheet tabs are ready.",
+          ? "Database tables are ready."
+          : "Database is ready.",
     };
   } catch (error) {
     return {
       ok: false as const,
-      message: safeErrorMessage(error, "Google Sheets connection unavailable."),
+      message: safeErrorMessage(error, "Database connection unavailable."),
     };
   }
 }

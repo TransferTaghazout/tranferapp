@@ -10,6 +10,7 @@ import {
   Search,
   Settings2,
   Sun,
+  Truck,
   Users,
   Wallet,
 } from "lucide-react";
@@ -20,6 +21,7 @@ const items = [
   { href: "/calendar", label: "Calendar", icon: CalendarDays },
   { href: "/reservations", label: "Reservations", icon: ListTodo },
   { href: "/finance", label: "Finance", icon: CircleDollarSign },
+  { href: "/drivers", label: "Drivers", icon: Truck },
   { href: "/services", label: "Services", icon: Compass },
   { href: "/customers", label: "Customers", icon: Users },
   { href: "/search", label: "Search", icon: Search },

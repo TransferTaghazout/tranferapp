@@ -9,7 +9,7 @@ export default async function EditReservationPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const { reservations, services, customers, settings } = await loadWorkspace();
+  const { reservations, services, customers, drivers, settings } = await loadWorkspace();
   const reservation = reservations.find((item) => item.id === id);
   if (!reservation) notFound();
   const recognized = customers.find(
@@ -25,8 +25,7 @@ export default async function EditReservationPage({
       <ReservationForm
         reservation={reservation}
         services={services.filter((s) => s.active || s.name === reservation.serviceName)}
-        customers={customers}
-        recognizedCustomer={recognized}
+        drivers={drivers}
         defaultDate={todayISO()}
         defaultTime={currentTime(settings.timezone)}
       />

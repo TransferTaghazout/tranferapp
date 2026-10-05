@@ -6,7 +6,7 @@ import { StatCard } from "@/components/shared/stat-card";
 import { formatLongDate, todayISO } from "@/lib/dates";
 import { formatMoney } from "@/lib/money";
 import { loadWorkspace } from "@/lib/data";
-import { summarizeReservations } from "@/lib/sheets/finance";
+import { summarizeReservations } from "@/lib/db/finance";
 
 export default async function CalendarPage({
   searchParams,

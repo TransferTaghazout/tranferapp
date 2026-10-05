@@ -13,7 +13,8 @@ export default async function LoginPage({
   searchParams: Promise<{ error?: string }>;
 }) {
   const session = await getSession();
-  if (session) redirect("/");
+  if (session?.role === "driver") redirect("/driver");
+  if (session?.role === "admin") redirect("/");
   const params = await searchParams;
 
   return (
@@ -73,6 +74,9 @@ export default async function LoginPage({
             <Button type="submit" size="lg" className="mt-2 w-full">
               Enter dashboard
             </Button>
+            <a href="/driver/login" className="text-center text-sm font-semibold text-muted-foreground">
+              Ana driver
+            </a>
           </div>
         </form>
       </div>

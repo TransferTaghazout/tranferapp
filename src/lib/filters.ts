@@ -1,5 +1,5 @@
 import { monthRange, todayISO, tomorrowISO, weekRange, inRange } from "@/lib/dates";
-import { matchesSearch } from "@/lib/sheets/reservations";
+import { matchesSearch } from "@/lib/db/reservations";
 import { Reservation } from "@/lib/types";
 
 export function filterReservations(

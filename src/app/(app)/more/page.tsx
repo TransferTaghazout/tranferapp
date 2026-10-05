@@ -21,6 +21,7 @@ export default async function MorePage() {
       </header>
 
       <div className="grid gap-3">
+        <MoreLink href="/drivers" title="Drivers" text="Smiya, telephone, email, khedma" />
         <MoreLink href="/services" title="Services" text="Prices, costs and catalog" />
         <MoreLink href="/customers" title="Customers" text="Repeat guests and history" />
         <MoreLink href="/search" title="Search" text="Find a guest or booking instantly" />
@@ -33,9 +34,9 @@ export default async function MorePage() {
       </section>
 
       <section className="rounded-[1.5rem] border bg-card p-5">
-        <h2 className="font-display text-3xl">Google Sheets</h2>
+        <h2 className="font-display text-3xl">Database</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          Prepare the Tourism Reservation Manager tabs or load clearly marked DEMO bookings.
+          PostgreSQL — create tables for reservations, drivers and finance.
         </p>
         <div className="mt-4">
           <SetupActions />

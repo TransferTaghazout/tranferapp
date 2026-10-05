@@ -1,6 +1,6 @@
 import { todayISO, tomorrowISO } from "@/lib/dates";
 import { addDays, format, parseISO } from "date-fns";
-import { Reservation, Service } from "@/lib/types";
+import { PaymentStatus, ReservationStatus, Service, ServiceType } from "@/lib/types";
 import { cacheClear } from "@/lib/sheets/cache";
 import { createReservation, getReservations } from "@/lib/sheets/reservations";
 import { createService, getServices } from "@/lib/sheets/services";
@@ -73,7 +73,7 @@ export async function seedDemoData() {
   const today = todayISO();
   const tomorrow = tomorrowISO();
 
-  const demos: Omit<Reservation, "id" | "profit" | "createdAt" | "updatedAt">[] = [
+  const demos = [
     {
       date: today,
       time: "09:00",
@@ -291,18 +291,20 @@ export async function seedDemoData() {
       phone: demo.phone,
       whatsapp: demo.whatsapp,
       numberOfPeople: demo.numberOfPeople,
-      type: demo.type,
+      type: demo.type as ServiceType,
       serviceName: demo.serviceName,
       pickupLocation: demo.pickupLocation,
       destination: demo.destination,
       price: demo.price,
       cost: demo.cost,
       currency: demo.currency,
-      status: demo.status,
-      paymentStatus: demo.paymentStatus,
+      status: demo.status as ReservationStatus,
+      paymentStatus: demo.paymentStatus as PaymentStatus,
       description: demo.description,
       internalNotes: demo.internalNotes,
       driver: demo.driver,
+      driverId: "",
+      commission: demo.cost,
       vehicle: demo.vehicle,
       flightNumber: demo.flightNumber,
       bookingSource: "DEMO",
