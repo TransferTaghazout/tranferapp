@@ -15,6 +15,9 @@ const items = [
 
 export function BottomNav() {
   const pathname = usePathname();
+  if (pathname.startsWith("/reservations/new") || pathname.endsWith("/edit")) {
+    return null;
+  }
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 backdrop-blur md:hidden">

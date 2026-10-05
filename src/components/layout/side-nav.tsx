@@ -38,6 +38,12 @@ export function SideNav({ businessName }: { businessName: string }) {
         <h1 className="mt-2 font-display text-3xl leading-none">{businessName}</h1>
       </div>
       <nav className="flex flex-1 flex-col gap-1">
+        <Link
+          href="/reservations/new"
+          className="mb-3 flex items-center justify-center rounded-2xl bg-sand px-4 py-3 text-sm font-bold text-[#2c2416]"
+        >
+          Add reservation
+        </Link>
         {items.map((item) => {
           const active =
             item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);

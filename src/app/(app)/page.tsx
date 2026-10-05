@@ -81,7 +81,7 @@ export default async function TodayPage() {
       </div>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <QuickLink href="/reservations/new" icon={<Plus className="h-4 w-4" />} label="New Reservation" />
+        <QuickLink href="/reservations/new" icon={<Plus className="h-4 w-4" />} label="Add reservation" />
         <QuickLink href="/calendar" icon={<CalendarDays className="h-4 w-4" />} label="Calendar" />
         <QuickLink href="/finance" icon={<CircleDollarSign className="h-4 w-4" />} label="Finance" />
       </div>
@@ -103,7 +103,7 @@ export default async function TodayPage() {
             title="No services today"
             description="Add the first transfer, activity or tour and it will appear here instantly."
             actionHref="/reservations/new"
-            actionLabel="+ New Reservation"
+            actionLabel="Add reservation"
           />
         ) : (
           <div className="space-y-3">

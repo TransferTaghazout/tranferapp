@@ -183,9 +183,12 @@ export function ReservationForm({
         <p className="font-display text-3xl">{formatMoney(profit)}</p>
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/95 p-4 backdrop-blur">
+      <Button type="submit" size="lg" className="w-full" disabled={pending}>
+        {pending ? "Saving..." : reservation ? "Save reservation" : "Add reservation"}
+      </Button>
+      <div className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-background/95 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur md:hidden">
         <Button type="submit" size="lg" className="w-full" disabled={pending}>
-          {pending ? "Saving..." : "Save reservation"}
+          {pending ? "Saving..." : reservation ? "Save reservation" : "Add reservation"}
         </Button>
       </div>
     </form>
