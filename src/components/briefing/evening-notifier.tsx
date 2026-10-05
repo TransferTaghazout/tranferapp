@@ -29,11 +29,11 @@ async function notifyDriverBriefing(count: number, date: string) {
   if (typeof Notification === "undefined" || Notification.permission !== "granted") {
     return;
   }
-  const title = "Khedma dyal ghedda";
+  const title = "Tomorrow's jobs";
   const body =
     count > 0
-      ? `${count} services ghedda. Sift l liste l driver f WhatsApp.`
-      : "Ma kayn hatta service ghedda.";
+      ? `${count} services tomorrow. Share the list with the driver on WhatsApp.`
+      : "No services tomorrow.";
   const registration = await navigator.serviceWorker?.ready.catch(() => undefined);
   if (registration?.showNotification) {
     await registration.showNotification(title, {

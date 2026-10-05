@@ -69,7 +69,7 @@ export default async function LoginPage({
               Enter dashboard
             </Button>
             <a href="/driver/login" className="text-center text-sm font-semibold text-muted-foreground">
-              Ana driver
+            Driver login
             </a>
           </div>
         </form>

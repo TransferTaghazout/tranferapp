@@ -1,7 +1,6 @@
 import { ReservationFilters } from "@/components/reservations/filters";
 import { ReservationCard } from "@/components/reservations/reservation-card";
 import { ReservationTable } from "@/components/reservations/reservation-table";
-import { ConnectionBanner } from "@/components/setup/connection-banner";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Button } from "@/components/ui/button";
 import { loadWorkspace } from "@/lib/data";
@@ -27,7 +26,6 @@ export default async function ReservationsPage({
 
   return (
     <div className="space-y-5">
-      <ConnectionBanner />
       <header className="flex items-end justify-between gap-3">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-sand">Reservations</p>

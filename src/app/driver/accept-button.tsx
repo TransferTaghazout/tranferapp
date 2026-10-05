@@ -22,13 +22,13 @@ export function DriverJobActions({
   const router = useRouter();
   const [pending, startTransition] = useTransition();
 
-  function run(action: typeof completeDriverJobAction, okMessage?: string) {
+  function run(action: typeof completeDriverJobAction) {
     startTransition(async () => {
       const form = document.getElementById(`driver-job-${jobId}`) as HTMLFormElement | null;
       if (!form) return;
       const result = await action(new FormData(form));
       if (!result.ok) toast.error(result.message);
-      else toast.success(okMessage || result.message);
+      else toast.success(result.message);
       router.refresh();
     });
   }
@@ -38,20 +38,20 @@ export function DriverJobActions({
       <input type="hidden" name="id" value={jobId} />
       <div className="rounded-2xl bg-emerald-100 p-3">
         <p className="mb-1 text-xs font-bold uppercase tracking-wider text-emerald-800">
-          Commission dyali
+          My commission
         </p>
         <Input
           name="driverCommission"
           type="number"
           min={0}
           defaultValue={driverCommission || ""}
-          placeholder="Chhal bghiti"
+          placeholder="Your amount"
           className="border-emerald-200 bg-white"
           disabled={completed}
         />
       </div>
       {completed ? (
-        <p className="text-center text-sm font-semibold text-emerald-700">Accepté — dart</p>
+        <p className="text-center text-sm font-semibold text-emerald-700">Completed</p>
       ) : (
         <div className="grid gap-2">
           <Button
@@ -60,10 +60,10 @@ export function DriverJobActions({
             disabled={pending}
             onClick={() => run(saveDriverCommissionAction)}
           >
-            {pending ? "..." : "Sift commission"}
+            {pending ? "..." : "Save commission"}
           </Button>
           <Button type="button" disabled={pending} onClick={() => run(completeDriverJobAction)}>
-            {pending ? "..." : "Accept — dart l-service"}
+            {pending ? "..." : "Accept — job done"}
           </Button>
         </div>
       )}

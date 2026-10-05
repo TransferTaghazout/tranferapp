@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { logoutAction } from "@/app/actions/auth";
 import { SetupActions } from "@/components/setup/setup-actions";
-import { ConnectionBanner } from "@/components/setup/connection-banner";
 import { Button } from "@/components/ui/button";
 import { loadWorkspace } from "@/lib/data";
 import { getSession } from "@/lib/auth";
@@ -13,7 +12,6 @@ export default async function MorePage() {
 
   return (
     <div className="space-y-6">
-      <ConnectionBanner />
       <header>
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-sand">More</p>
         <h1 className="mt-1 font-display text-4xl">Workspace</h1>
@@ -21,7 +19,7 @@ export default async function MorePage() {
       </header>
 
       <div className="grid gap-3">
-        <MoreLink href="/drivers" title="Drivers" text="Smiya, telephone, email, khedma" />
+        <MoreLink href="/drivers" title="Drivers" text="Name, phone, email and assigned jobs" />
         <MoreLink href="/services" title="Services" text="Prices, costs and catalog" />
         <MoreLink href="/customers" title="Customers" text="Repeat guests and history" />
         <MoreLink href="/search" title="Search" text="Find a guest or booking instantly" />
@@ -60,4 +58,3 @@ function MoreLink({ href, title, text }: { href: string; title: string; text: st
     </Link>
   );
 }
-

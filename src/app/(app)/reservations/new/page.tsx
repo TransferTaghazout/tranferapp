@@ -1,5 +1,4 @@
 import { ReservationForm } from "@/components/reservations/reservation-form";
-import { ConnectionBanner } from "@/components/setup/connection-banner";
 import { currentTime, todayISO } from "@/lib/dates";
 import { loadWorkspace } from "@/lib/data";
 
@@ -19,11 +18,10 @@ export default async function NewReservationPage({
 
   return (
     <div className="mx-auto max-w-2xl space-y-5">
-      <ConnectionBanner />
       <header>
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-sand">Create</p>
         <h1 className="mt-1 font-display text-4xl">Add reservation</h1>
-        <p className="text-muted-foreground">Smiya, date, type, transfer, description, finance.</p>
+        <p className="text-muted-foreground">Name, date, type, transfer, description, finance.</p>
       </header>
       <ReservationForm
         services={services.filter((s) => s.active)}

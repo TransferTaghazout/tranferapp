@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 export function ShareTomorrowButton({
   href,
-  label = "Share WhatsApp l driver",
+  label = "Share with driver on WhatsApp",
 }: {
   href: string;
   label?: string;

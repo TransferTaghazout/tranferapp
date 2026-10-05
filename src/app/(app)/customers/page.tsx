@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { ConnectionBanner } from "@/components/setup/connection-banner";
 import { EmptyState } from "@/components/shared/empty-state";
 import { formatDisplayDate } from "@/lib/dates";
 import { formatMoney } from "@/lib/money";
@@ -10,7 +9,6 @@ export default async function CustomersPage() {
 
   return (
     <div className="space-y-5">
-      <ConnectionBanner />
       <header>
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-sand">Guests</p>
         <h1 className="mt-1 font-display text-4xl">Customers</h1>

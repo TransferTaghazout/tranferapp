@@ -1,4 +1,3 @@
-import { ConnectionBanner } from "@/components/setup/connection-banner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { loadWorkspace } from "@/lib/data";
 import { DriverForm } from "@/app/(app)/drivers/driver-form";
@@ -8,12 +7,11 @@ export default async function DriversPage() {
 
   return (
     <div className="space-y-6">
-      <ConnectionBanner />
       <header>
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-sand">Team</p>
         <h1 className="mt-1 font-display text-4xl">Drivers</h1>
         <p className="text-muted-foreground">
-          Smiya, telephone, email. Nta katsift lihom lkedma, howa kaychouf ghi taman service.
+          Add name, phone and email. You assign jobs; the driver sees only their commission.
         </p>
       </header>
 

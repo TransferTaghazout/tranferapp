@@ -6,7 +6,6 @@ import {
   getSettings,
   getDrivers,
 } from "@/lib/db";
-import { friendlyDbError } from "@/lib/db/client";
 
 export async function loadWorkspace() {
   try {
@@ -26,7 +25,7 @@ export async function loadWorkspace() {
       settings,
       error: null as string | null,
     };
-  } catch (error) {
+  } catch {
     return {
       configured: false as const,
       reservations: [] as Reservation[],
@@ -34,8 +33,7 @@ export async function loadWorkspace() {
       customers: [],
       drivers: [] as Driver[],
       settings: DEFAULT_SETTINGS,
-      error:
-        error instanceof Error ? friendlyDbError(error) : "Database connection unavailable.",
+      error: null as string | null,
     };
   }
 }

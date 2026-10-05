@@ -8,10 +8,10 @@ export async function driverLoginAction(_: { error?: string } | undefined, formD
   const login = String(formData.get("login") || "").trim();
   const password = String(formData.get("password") || "");
   if (!login || !password) {
-    return { error: "Telephone/email w password khasshom." };
+    return { error: "Phone/email and password are required." };
   }
-  const driver = await authenticateDriver(login, password);
-  if (!driver) return { error: "Login ghalat." };
+  const driver = await authenticateDriver(login, password).catch(() => null);
+  if (!driver) return { error: "Incorrect login." };
   await createSession({
     role: "driver",
     email: driver.email || driver.phone,

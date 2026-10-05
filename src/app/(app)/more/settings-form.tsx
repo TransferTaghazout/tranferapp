@@ -33,7 +33,7 @@ export function SettingsForm({ settings }: { settings: Settings }) {
         defaultValue={settings.whatsappCountryCode}
       />
       <Field
-        label="WhatsApp dyal driver"
+        label="Driver WhatsApp"
         name="driverWhatsApp"
         defaultValue={settings.driverWhatsApp}
       />

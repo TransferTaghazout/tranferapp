@@ -26,7 +26,7 @@ export function TomorrowBoard({
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-accent">
           19:00 · Driver briefing
         </p>
-        <h2 className="mt-1 font-display text-3xl">Khedma dyal ghedda</h2>
+        <h2 className="mt-1 font-display text-3xl">Tomorrow&apos;s jobs</h2>
         <p className="text-sm text-muted-foreground">
           {formatLongDate(date)} · {jobs.length} services
         </p>
@@ -36,7 +36,7 @@ export function TomorrowBoard({
         <ShareTomorrowButton key={share.href} href={share.href} label={share.label} />
       ))}
       {jobs.length === 0 ? (
-        <p className="text-sm text-muted-foreground">Ma kayn hatta service ghedda.</p>
+        <p className="text-sm text-muted-foreground">No services tomorrow.</p>
       ) : (
         <div className="space-y-3">
           {jobs.map((reservation) => (

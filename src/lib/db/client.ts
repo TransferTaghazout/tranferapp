@@ -47,17 +47,13 @@ function parseDatabaseUrl(raw: string): DbTarget {
       ssl: /sslmode=require/i.test(raw),
     };
   }
-  throw new Error("DATABASE_URL ghalat.");
+  throw new Error("Invalid DATABASE_URL.");
 }
 
 function candidateHosts(primary: string) {
-  const hosts = [
-    primary,
-    process.env.POSTGRES_HOST,
-    process.env.DB_HOST,
-    "mytransferapp",
-    "transfer_mytransferapp",
-  ].filter((host): host is string => Boolean(host));
+  const hosts = [primary, process.env.POSTGRES_HOST, process.env.DB_HOST].filter(
+    (host): host is string => Boolean(host),
+  );
   return [...new Set(hosts)];
 }
 
@@ -70,7 +66,7 @@ function makePool(target: DbTarget): Pool {
     database: target.database,
     ssl: target.ssl ? { rejectUnauthorized: false } : false,
     max: 8,
-    connectionTimeoutMillis: 1500,
+    connectionTimeoutMillis: 8000,
   };
   return new Pool(config);
 }
@@ -111,19 +107,19 @@ export function getPool() {
 export function friendlyDbError(error: Error | null) {
   const message = error?.message || "Database connection unavailable.";
   if (message.includes("ENOTFOUND") || message.includes("getaddrinfo")) {
-    return "Postgres Internal Hostname ma khdemch. F EasyPanel Postgres copy External host/IP, w zid DATABASE_URL b dak IP.";
+    return "Database host could not be reached. Set DATABASE_URL to the Postgres External host and port.";
   }
   if (message.includes("ECONNREFUSED")) {
-    return "Postgres rfid l-connection. Chouf service dyal database khddam.";
+    return "Postgres refused the connection. Check that the database service is running.";
   }
   if (message.toLowerCase().includes("password") || message.includes("28P01")) {
-    return "User/password dyal database ghalat.";
+    return "Database username or password is incorrect.";
   }
   if (message.includes("timeout")) {
-    return "Database timeout. App ma qdersh ywsal l Postgres.";
+    return "Database connection timed out.";
   }
   if (message.includes("does not exist")) {
-    return "Database transferapp ma kaynach. Create database transferapp.";
+    return "Database transferapp does not exist.";
   }
   return "Database connection unavailable.";
 }

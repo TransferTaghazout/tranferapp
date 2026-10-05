@@ -18,10 +18,10 @@ export function driverWhatsAppMessage(reservations: Reservation[], driverId?: st
   const jobs = tomorrowJobs(reservations).filter((job) =>
     driverId ? job.driverId === driverId : true,
   );
-  const header = `سلام خويا 👋\nKhedma dyal ghedda — ${formatDisplayDate(date)}\n`;
+  const header = `Hi\nTomorrow's jobs — ${formatDisplayDate(date)}\n`;
 
   if (jobs.length === 0) {
-    return `${header}\nMa kayn hatta service ghedda.`;
+    return `${header}\nNo services tomorrow.`;
   }
 
   const lines = jobs.map((job, index) => {
@@ -30,16 +30,16 @@ export function driverWhatsAppMessage(reservations: Reservation[], driverId?: st
         ? `${job.pickupLocation} → ${job.destination}`
         : "";
     return [
-      `${index + 1}️⃣ ${formatDisplayTime(job.time)}`,
+      `${index + 1}. ${formatDisplayTime(job.time)}`,
       job.customerName,
       route,
       job.type,
       job.description,
-      job.driverCommission ? `Commission dyalek: ${job.driverCommission} DH` : null,
+      job.driverCommission ? `Your commission: ${job.driverCommission} DH` : null,
     ]
       .filter(Boolean)
       .join("\n");
   });
 
-  return `${header}\n${lines.join("\n\n")}\n\nTotal: ${jobs.length} ${jobs.length === 1 ? "service" : "services"}\nAllah y3awn 💪`;
+  return `${header}\n${lines.join("\n\n")}\n\nTotal: ${jobs.length} ${jobs.length === 1 ? "service" : "services"}`;
 }

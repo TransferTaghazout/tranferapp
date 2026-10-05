@@ -1,5 +1,4 @@
 import { ServiceForm } from "@/components/services/service-form";
-import { ConnectionBanner } from "@/components/setup/connection-banner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { calculateProfit, formatMoney } from "@/lib/money";
 import { loadWorkspace } from "@/lib/data";
@@ -9,7 +8,6 @@ export default async function ServicesPage() {
 
   return (
     <div className="space-y-6">
-      <ConnectionBanner />
       <header>
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-sand">Catalog</p>
         <h1 className="mt-1 font-display text-4xl">Services</h1>

@@ -1,5 +1,4 @@
 import { MonthCalendar } from "@/components/calendar/month-calendar";
-import { ConnectionBanner } from "@/components/setup/connection-banner";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ReservationCard } from "@/components/reservations/reservation-card";
 import { StatCard } from "@/components/shared/stat-card";
@@ -25,7 +24,6 @@ export default async function CalendarPage({
 
   return (
     <div className="space-y-6">
-      <ConnectionBanner />
       <header>
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-sand">Calendar</p>
         <h1 className="mt-1 font-display text-4xl">Monthly board</h1>

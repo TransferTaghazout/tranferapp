@@ -30,16 +30,16 @@ export async function saveDriverCommissionAction(formData: FormData) {
   const amount = toMoney(formData.get("driverCommission"));
   try {
     const job = await ownedJob(id, session.driverId);
-    if (!job) return { ok: false as const, message: "Had lkedma machi dyalek." };
+    if (!job) return { ok: false as const, message: "This job is not assigned to you." };
     if (job.status === "Cancelled") {
-      return { ok: false as const, message: "Had lkedma annulée." };
+      return { ok: false as const, message: "This job is cancelled." };
     }
     await updateDriverCommission(id, amount);
     revalidateJobs();
     revalidatePath(`/reservations/${id}`);
-    return { ok: true as const, message: "Commission dyalek tsiftat." };
+    return { ok: true as const, message: "Your commission was saved." };
   } catch (error) {
-    return { ok: false as const, message: safeErrorMessage(error, "Ma qdersh nsift commission.") };
+    return { ok: false as const, message: safeErrorMessage(error, "Could not save commission.") };
   }
 }
 
@@ -49,9 +49,9 @@ export async function completeDriverJobAction(formData: FormData) {
   const amount = toMoney(formData.get("driverCommission"));
   try {
     const job = await ownedJob(id, session.driverId);
-    if (!job) return { ok: false as const, message: "Had lkedma machi dyalek." };
+    if (!job) return { ok: false as const, message: "This job is not assigned to you." };
     if (job.status === "Cancelled") {
-      return { ok: false as const, message: "Had lkedma annulée." };
+      return { ok: false as const, message: "This job is cancelled." };
     }
     await updateDriverCommission(id, amount);
     if (job.status !== "Completed") {
@@ -59,11 +59,11 @@ export async function completeDriverJobAction(formData: FormData) {
     }
     revalidateJobs();
     revalidatePath(`/reservations/${id}`);
-    return { ok: true as const, message: "Accepté. Dart l-service." };
+    return { ok: true as const, message: "Accepted. Job marked as done." };
   } catch (error) {
     return {
       ok: false as const,
-      message: safeErrorMessage(error, "Ma qdersh naccepti."),
+      message: safeErrorMessage(error, "Could not accept this job."),
     };
   }
 }

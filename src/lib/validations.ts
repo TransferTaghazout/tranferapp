@@ -51,8 +51,8 @@ export type ServiceInput = z.infer<typeof serviceSchema>;
 
 export const driverSchema = z.object({
   id: z.string().optional(),
-  name: z.string().trim().min(1, "Smiya khassha"),
-  phone: z.string().trim().min(6, "Telephone khass"),
+  name: z.string().trim().min(1, "Name is required"),
+  phone: z.string().trim().min(6, "Phone is required"),
   email: z.string().trim().optional().default(""),
   password: z.string().optional().default(""),
   active: z.coerce.boolean().optional().default(true),
@@ -82,7 +82,7 @@ export const settingsSchema = z.object({
 });
 
 export const loginSchema = z.object({
-  email: z.string().trim().min(1, "Login khass"),
+  email: z.string().trim().min(1, "Login is required"),
   password: z.string().min(1, "Password is required"),
 });
 

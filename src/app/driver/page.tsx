@@ -10,21 +10,21 @@ export default async function DriverHomePage() {
   const session = await requireDriverSession().catch(() => null);
   if (!session) redirect("/driver/login");
 
-  const jobs = (await getReservationsForDriver(session.driverId)).filter(
-    (item) => item.status !== "Cancelled",
-  );
+  const jobs = await getReservationsForDriver(session.driverId)
+    .then((items) => items.filter((item) => item.status !== "Cancelled"))
+    .catch(() => []);
   const today = todayISO();
   const tomorrow = tomorrowISO();
   const open = jobs.filter((item) => item.status !== "Completed");
   const done = jobs.filter((item) => item.status === "Completed");
   const groups = [
-    { label: "Lyoum", items: open.filter((item) => item.date === today) },
-    { label: "Ghedda", items: open.filter((item) => item.date === tomorrow) },
+    { label: "Today", items: open.filter((item) => item.date === today) },
+    { label: "Tomorrow", items: open.filter((item) => item.date === tomorrow) },
     {
-      label: "Mnb3d",
+      label: "Later",
       items: open.filter((item) => item.date > tomorrow),
     },
-    { label: "Dart", items: done },
+    { label: "Done", items: done },
   ];
 
   return (
@@ -33,7 +33,7 @@ export default async function DriverHomePage() {
         <section key={group.label} className="space-y-3">
           <h2 className="font-display text-3xl">{group.label}</h2>
           {group.items.length === 0 ? (
-            <p className="text-sm text-muted-foreground">Ma kayn hatta khedma.</p>
+            <p className="text-sm text-muted-foreground">No jobs yet.</p>
           ) : (
             group.items.map((job) => (
               <article key={job.id} className="rounded-[1.4rem] border bg-card p-4">

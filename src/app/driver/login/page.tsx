@@ -24,8 +24,8 @@ export default async function DriverLoginPage({
       <div className="relative mx-auto flex min-h-dvh max-w-md flex-col justify-end px-5 pb-10 pt-16">
         <div className="mb-10 text-white">
           <p className="text-xs uppercase tracking-[0.25em] text-white/70">Driver</p>
-          <h1 className="mt-3 font-display text-5xl leading-none">Khedma dyali</h1>
-          <p className="mt-4 max-w-xs text-white/80">Chouf lkedma w taman service.</p>
+          <h1 className="mt-3 font-display text-5xl leading-none">My jobs</h1>
+          <p className="mt-4 max-w-xs text-white/80">See assigned jobs and your commission.</p>
         </div>
         <form
           action={async (formData) => {
@@ -42,15 +42,15 @@ export default async function DriverLoginPage({
           ) : null}
           <div className="grid gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="login">Telephone ou email</Label>
-              <Input id="login" name="login" required placeholder="06... ou email" />
+              <Label htmlFor="login">Phone or email</Label>
+              <Input id="login" name="login" required placeholder="Phone or email" />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="password">Password</Label>
               <Input id="password" name="password" type="password" required />
             </div>
             <Button type="submit" size="lg" className="w-full">
-              Dkhol
+              Sign in
             </Button>
             <Link href="/login" className="text-center text-sm font-semibold text-muted-foreground">
               Admin login

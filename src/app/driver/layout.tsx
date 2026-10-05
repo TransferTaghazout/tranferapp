@@ -19,7 +19,7 @@ export default async function DriverLayout({ children }: { children: React.React
         </div>
         <form action={logoutAction}>
           <Button type="submit" variant="outline" size="sm">
-            Khrej
+            Sign out
           </Button>
         </form>
       </header>

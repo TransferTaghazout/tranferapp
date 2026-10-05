@@ -20,7 +20,7 @@ export async function saveDriverAction(formData: FormData) {
     return { ok: false as const, message: parsed.error.issues[0]?.message || "Check driver details." };
   }
   if (!parsed.data.id && !parsed.data.password) {
-    return { ok: false as const, message: "Password khass l driver jdid." };
+    return { ok: false as const, message: "A password is required for a new driver." };
   }
   try {
     const driver = parsed.data.id

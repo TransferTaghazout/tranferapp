@@ -70,7 +70,7 @@ export function ReservationForm({
         name="customerName"
         required
         defaultValue={reservation?.customerName}
-        placeholder="Smiya"
+        placeholder="Name"
       />
 
       <div className="grid grid-cols-2 gap-3">
@@ -126,7 +126,7 @@ export function ReservationForm({
         onChange={(e) => setDriverId(e.target.value)}
         className="h-12 rounded-2xl border border-input bg-card px-4"
       >
-        <option value="">Driver — khter</option>
+        <option value="">Select driver</option>
         {drivers
           .filter((driver) => driver.active || driver.id === reservation?.driverId)
           .map((driver) => (
@@ -143,12 +143,12 @@ export function ReservationForm({
         required
         value={price}
         onChange={(e) => setPrice(e.target.value)}
-        placeholder="Price — chhal 3lanti"
+        placeholder="Client price"
       />
       <div className="grid grid-cols-2 gap-3">
         <div className="rounded-2xl bg-amber-100 p-3">
           <p className="mb-1 text-xs font-bold uppercase tracking-wider text-amber-800">
-            Commission dyali
+            My commission
           </p>
           <Input
             name="commission"
@@ -162,7 +162,7 @@ export function ReservationForm({
         </div>
         <div className="rounded-2xl bg-emerald-100 p-3">
           <p className="mb-1 text-xs font-bold uppercase tracking-wider text-emerald-800">
-            Commission driver
+            Driver commission
           </p>
           <Input
             name="driverCommission"
@@ -170,13 +170,13 @@ export function ReservationForm({
             min={0}
             value={driverCommission}
             onChange={(e) => setDriverCommission(e.target.value)}
-            placeholder="Li bgha driver"
+            placeholder="Driver amount"
             className="border-emerald-200 bg-white"
           />
         </div>
       </div>
       <p className="text-xs text-muted-foreground">
-        Commission l-khder kayktebha driver. Nta katshufha b color mokhtalef.
+        The driver enters their commission in green. Yours is shown in amber.
       </p>
       <div className="rounded-2xl bg-primary px-4 py-3 text-primary-foreground">
         <p className="text-xs uppercase tracking-wider text-white/70">Profit</p>

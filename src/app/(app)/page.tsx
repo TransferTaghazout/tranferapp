@@ -1,8 +1,6 @@
 import Link from "next/link";
 import { CalendarDays, CircleDollarSign, Plus } from "lucide-react";
-import { ConnectionBanner } from "@/components/setup/connection-banner";
 import { EmptyState } from "@/components/shared/empty-state";
-import { ErrorState } from "@/components/shared/error-state";
 import { StatCard } from "@/components/shared/stat-card";
 import { ReservationCard } from "@/components/reservations/reservation-card";
 import { formatInTimeZone } from "date-fns-tz";
@@ -18,7 +16,7 @@ import { TIMEZONE } from "@/lib/types";
 
 export default async function TodayPage() {
   const today = todayISO();
-  const { reservations, error, settings } = await loadWorkspace();
+  const { reservations, settings } = await loadWorkspace();
   const todays = reservations
     .filter((item) => item.date === today)
     .sort((a, b) => a.time.localeCompare(b.time));
@@ -60,7 +58,6 @@ export default async function TodayPage() {
   return (
     <div className="space-y-6">
       <EveningNotifier tomorrowCount={tomorrow.length} tomorrowDate={tomorrowDate} />
-      <ConnectionBanner />
       <header>
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-sand">Today</p>
         <h1 className="mt-1 font-display text-4xl">{formatLongDate(today)}</h1>
@@ -94,11 +91,9 @@ export default async function TodayPage() {
         highlight={afterSeven}
       />
 
-      {error ? <ErrorState message={error} title="Unable to load today's services" /> : null}
-
       <section className="space-y-3">
         <h2 className="font-display text-3xl">Today&apos;s Services</h2>
-        {todays.length === 0 && !error ? (
+        {todays.length === 0 ? (
           <EmptyState
             title="No services today"
             description="Add the first transfer, activity or tour and it will appear here instantly."

@@ -1,4 +1,3 @@
-import { ConnectionBanner } from "@/components/setup/connection-banner";
 import { StatCard } from "@/components/shared/stat-card";
 import { loadWorkspace } from "@/lib/data";
 import { monthRange, todayISO, weekRange } from "@/lib/dates";
@@ -37,7 +36,6 @@ export default async function FinancePage({
 
   return (
     <div className="space-y-6">
-      <ConnectionBanner />
       <header>
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-sand">Finance</p>
         <h1 className="mt-1 font-display text-4xl">Revenue & profit</h1>

@@ -23,11 +23,11 @@ export function DriverForm({ driver }: { driver?: Driver }) {
     <form action={onSubmit} className="grid gap-3">
       {driver ? <input type="hidden" name="id" value={driver.id} /> : null}
       <div className="grid gap-1.5">
-        <Label htmlFor="name">Smiya</Label>
+        <Label htmlFor="name">Name</Label>
         <Input id="name" name="name" required defaultValue={driver?.name} placeholder="Youssef" />
       </div>
       <div className="grid gap-1.5">
-        <Label htmlFor="phone">Telephone</Label>
+        <Label htmlFor="phone">Phone</Label>
         <Input id="phone" name="phone" required defaultValue={driver?.phone} placeholder="06..." />
       </div>
       <div className="grid gap-1.5">
@@ -35,7 +35,7 @@ export function DriverForm({ driver }: { driver?: Driver }) {
         <Input id="email" name="email" type="email" defaultValue={driver?.email} placeholder="driver@email.com" />
       </div>
       <div className="grid gap-1.5">
-        <Label htmlFor="password">Password {driver ? "(khawi ila ma bghitich tbeddel)" : ""}</Label>
+        <Label htmlFor="password">Password {driver ? "(leave empty to keep current)" : ""}</Label>
         <Input id="password" name="password" type="password" required={!driver} />
       </div>
       {driver ? (
