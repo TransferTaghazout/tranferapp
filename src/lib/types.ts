@@ -51,6 +51,7 @@ export interface Reservation {
   driverPhone: string;
   driverEmail: string;
   commission: number;
+  driverCommission: number;
   vehicle: string;
   flightNumber: string;
   bookingSource: string;

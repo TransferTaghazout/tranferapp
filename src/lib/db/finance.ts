@@ -23,8 +23,8 @@ export function summarizeReservations(
     (acc, item) => {
       acc.services += 1;
       acc.revenue += item.price;
-      acc.cost += item.commission || item.cost;
-      acc.profit += calculateProfit(item.price, item.commission || item.cost);
+      acc.cost += item.driverCommission;
+      acc.profit += calculateProfit(item.price, item.driverCommission);
       return acc;
     },
     { services: 0, revenue: 0, cost: 0, profit: 0 },
@@ -64,8 +64,8 @@ export function financeByServiceType(
     };
     current.services += 1;
     current.revenue += item.price;
-    current.cost += item.commission || item.cost;
-    current.profit += calculateProfit(item.price, item.commission || item.cost);
+    current.cost += item.driverCommission;
+    current.profit += calculateProfit(item.price, item.driverCommission);
     groups.set(key, current);
   }
 
@@ -98,8 +98,8 @@ export function financeByServiceName(
     };
     current.services += 1;
     current.revenue += item.price;
-    current.cost += item.commission || item.cost;
-    current.profit += calculateProfit(item.price, item.commission || item.cost);
+    current.cost += item.driverCommission;
+    current.profit += calculateProfit(item.price, item.driverCommission);
     groups.set(key, current);
   }
 
@@ -118,7 +118,7 @@ export async function getFinanceData(reservations?: Reservation[]) {
       reservationId: item.id,
       service: item.serviceName || item.type,
       revenue: item.price,
-      cost: item.commission || item.cost,
+      cost: item.driverCommission,
       profit: item.profit,
       paymentStatus: item.paymentStatus,
     })),

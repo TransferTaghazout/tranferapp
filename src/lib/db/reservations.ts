@@ -15,8 +15,9 @@ type ReservationRow = Record<string, unknown>;
 
 function mapReservation(row: ReservationRow): Reservation {
   const price = toMoney(row.price);
-  const commission = toMoney(row.commission ?? row.cost);
-  const cost = toMoney(row.cost ?? commission);
+  const commission = toMoney(row.commission);
+  const driverCommission = toMoney(row.driver_commission);
+  const cost = toMoney(row.cost ?? driverCommission);
   return {
     id: String(row.id),
     createdAt: String(row.created_at || ""),
@@ -33,7 +34,8 @@ function mapReservation(row: ReservationRow): Reservation {
     price,
     cost,
     commission,
-    profit: calculateProfit(price, commission),
+    driverCommission,
+    profit: calculateProfit(price, driverCommission),
     currency: String(row.currency || "MAD"),
     status: (String(row.status || "Pending") as ReservationStatus),
     paymentStatus: (String(row.payment_status || "Unpaid") as PaymentStatus),
@@ -75,7 +77,8 @@ export async function getReservationsForDriver(driverId: string) {
 async function buildReservation(input: ReservationInput, existing?: Reservation): Promise<Reservation> {
   const now = toSheetTimestamp();
   const price = toMoney(input.price);
-  const commission = toMoney(input.commission ?? input.cost);
+  const commission = toMoney(input.commission);
+  const driverCommission = toMoney(input.driverCommission ?? existing?.driverCommission);
   const driver = input.driverId ? await getDriverById(input.driverId) : null;
   return {
     id: existing?.id || input.id || generateId("RES"),
@@ -91,9 +94,10 @@ async function buildReservation(input: ReservationInput, existing?: Reservation)
     pickupLocation: input.pickupLocation || "",
     destination: input.destination || "",
     price,
-    cost: commission,
+    cost: driverCommission,
     commission,
-    profit: calculateProfit(price, commission),
+    driverCommission,
+    profit: calculateProfit(price, driverCommission),
     currency: input.currency || existing?.currency || "MAD",
     status: input.status,
     paymentStatus: input.paymentStatus,
@@ -128,6 +132,7 @@ function values(reservation: Reservation) {
     reservation.price,
     reservation.cost,
     reservation.commission,
+    reservation.driverCommission,
     reservation.profit,
     reservation.currency,
     reservation.status,
@@ -148,10 +153,10 @@ export async function createReservation(input: ReservationInput) {
   await query(
     `INSERT INTO reservations (
       id, created_at, date, time, customer_name, phone, whatsapp, number_of_people, type, service_name,
-      pickup_location, destination, price, cost, commission, profit, currency, status, payment_status,
+      pickup_location, destination, price, cost, commission, driver_commission, profit, currency, status, payment_status,
       description, internal_notes, driver, driver_id, vehicle, flight_number, booking_source, updated_at
     ) VALUES (
-      $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27
+      $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28
     )`,
     values(reservation),
   );
@@ -169,9 +174,9 @@ export async function updateReservation(id: string, input: ReservationInput) {
   await query(
     `UPDATE reservations SET
       date=$3, time=$4, customer_name=$5, phone=$6, whatsapp=$7, number_of_people=$8, type=$9, service_name=$10,
-      pickup_location=$11, destination=$12, price=$13, cost=$14, commission=$15, profit=$16, currency=$17,
-      status=$18, payment_status=$19, description=$20, internal_notes=$21, driver=$22, driver_id=$23,
-      vehicle=$24, flight_number=$25, booking_source=$26, updated_at=$27
+      pickup_location=$11, destination=$12, price=$13, cost=$14, commission=$15, driver_commission=$16, profit=$17, currency=$18,
+      status=$19, payment_status=$20, description=$21, internal_notes=$22, driver=$23, driver_id=$24,
+      vehicle=$25, flight_number=$26, booking_source=$27, updated_at=$28
      WHERE id=$1`,
     values(reservation),
   );
@@ -196,6 +201,13 @@ export async function updateReservationStatus(id: string, status: ReservationSta
   const current = await getReservationById(id);
   if (!current) throw new Error("Reservation not found.");
   return updateReservation(id, { ...current, status });
+}
+
+export async function updateDriverCommission(id: string, amount: number) {
+  const current = await getReservationById(id);
+  if (!current) throw new Error("Reservation not found.");
+  const driverCommission = toMoney(amount);
+  return updateReservation(id, { ...current, driverCommission, cost: driverCommission });
 }
 
 export function matchesSearch(reservation: Reservation, queryText: string) {

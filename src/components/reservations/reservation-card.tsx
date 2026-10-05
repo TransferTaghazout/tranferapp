@@ -34,7 +34,8 @@ export function ReservationCard({ reservation }: { reservation: Reservation }) {
             <div className="mt-3">
               <MoneyStack
                 price={reservation.price}
-                cost={reservation.cost}
+                commission={reservation.commission}
+                driverCommission={reservation.driverCommission}
                 profit={reservation.profit}
               />
             </div>

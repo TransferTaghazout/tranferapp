@@ -27,8 +27,7 @@ export default async function ReservationDetailPage({
     ["Driver", reservation.driverName || reservation.driver || "—"],
     ["Pickup", reservation.pickupLocation || "—"],
     ["Destination", reservation.destination || "—"],
-    ["Price client", formatMoney(reservation.price)],
-    ["Commission driver", formatMoney(reservation.commission || reservation.cost)],
+    ["Price", formatMoney(reservation.price)],
     ["Profit", formatMoney(reservation.profit)],
   ];
 
@@ -43,6 +42,19 @@ export default async function ReservationDetailPage({
           <PaymentBadge status={reservation.paymentStatus} />
         </div>
       </header>
+
+      <div className="grid grid-cols-2 gap-3">
+        <div className="rounded-[1.4rem] bg-amber-100 px-4 py-3">
+          <p className="text-xs font-bold uppercase tracking-wider text-amber-800">Commission dyali</p>
+          <p className="font-display text-3xl text-amber-950">{formatMoney(reservation.commission)}</p>
+        </div>
+        <div className="rounded-[1.4rem] bg-emerald-100 px-4 py-3">
+          <p className="text-xs font-bold uppercase tracking-wider text-emerald-800">Commission driver</p>
+          <p className="font-display text-3xl text-emerald-950">
+            {formatMoney(reservation.driverCommission)}
+          </p>
+        </div>
+      </div>
 
       <div className="overflow-hidden rounded-[1.5rem] border bg-card">
         {rows.map(([label, value]) => (

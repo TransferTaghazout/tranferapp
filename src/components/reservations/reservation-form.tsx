@@ -31,14 +31,15 @@ export function ReservationForm({
   const [pending, startTransition] = useTransition();
   const [type, setType] = useState<ServiceType>(reservation?.type || "Transfer");
   const [price, setPrice] = useState(String(reservation?.price ?? ""));
-  const [commission, setCommission] = useState(
-    String(reservation?.commission ?? reservation?.cost ?? ""),
+  const [commission, setCommission] = useState(String(reservation?.commission ?? ""));
+  const [driverCommission, setDriverCommission] = useState(
+    String(reservation?.driverCommission ?? ""),
   );
   const [driverId, setDriverId] = useState(reservation?.driverId || "");
 
   const profit = useMemo(
-    () => calculateProfit(Number(price || 0), Number(commission || 0)),
-    [price, commission],
+    () => calculateProfit(Number(price || 0), Number(driverCommission || 0)),
+    [price, driverCommission],
   );
 
   function onSubmit(formData: FormData) {
@@ -135,27 +136,47 @@ export function ReservationForm({
           ))}
       </select>
 
+      <Input
+        name="price"
+        type="number"
+        min={0}
+        required
+        value={price}
+        onChange={(e) => setPrice(e.target.value)}
+        placeholder="Price — chhal 3lanti"
+      />
       <div className="grid grid-cols-2 gap-3">
-        <Input
-          name="price"
-          type="number"
-          min={0}
-          required
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-          placeholder="Price client"
-        />
-        <Input
-          name="commission"
-          type="number"
-          min={0}
-          value={commission}
-          onChange={(e) => setCommission(e.target.value)}
-          placeholder="Commission driver"
-        />
+        <div className="rounded-2xl bg-amber-100 p-3">
+          <p className="mb-1 text-xs font-bold uppercase tracking-wider text-amber-800">
+            Commission dyali
+          </p>
+          <Input
+            name="commission"
+            type="number"
+            min={0}
+            value={commission}
+            onChange={(e) => setCommission(e.target.value)}
+            placeholder="Commission"
+            className="border-amber-200 bg-white"
+          />
+        </div>
+        <div className="rounded-2xl bg-emerald-100 p-3">
+          <p className="mb-1 text-xs font-bold uppercase tracking-wider text-emerald-800">
+            Commission driver
+          </p>
+          <Input
+            name="driverCommission"
+            type="number"
+            min={0}
+            value={driverCommission}
+            onChange={(e) => setDriverCommission(e.target.value)}
+            placeholder="Li bgha driver"
+            className="border-emerald-200 bg-white"
+          />
+        </div>
       </div>
       <p className="text-xs text-muted-foreground">
-        Driver kaychouf ghi commission b7al taman service.
+        Commission l-khder kayktebha driver. Nta katshufha b color mokhtalef.
       </p>
       <div className="rounded-2xl bg-primary px-4 py-3 text-primary-foreground">
         <p className="text-xs uppercase tracking-wider text-white/70">Profit</p>

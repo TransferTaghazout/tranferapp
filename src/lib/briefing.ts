@@ -35,7 +35,7 @@ export function driverWhatsAppMessage(reservations: Reservation[], driverId?: st
       route,
       job.type,
       job.description,
-      `Taman service: ${job.commission || job.cost} DH`,
+      job.driverCommission ? `Commission dyalek: ${job.driverCommission} DH` : null,
     ]
       .filter(Boolean)
       .join("\n");

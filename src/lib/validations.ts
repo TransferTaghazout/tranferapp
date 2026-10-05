@@ -22,6 +22,7 @@ export const reservationSchema = z.object({
   price: moneyField,
   cost: moneyField.optional().default(0),
   commission: moneyField.optional().default(0),
+  driverCommission: moneyField.optional().default(0),
   currency: z.string().optional().default("MAD"),
   status: z.enum(RESERVATION_STATUSES),
   paymentStatus: z.enum(PAYMENT_STATUSES),

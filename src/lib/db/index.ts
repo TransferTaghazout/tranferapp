@@ -7,6 +7,7 @@ export {
   updateReservation,
   deleteReservation,
   updateReservationStatus,
+  updateDriverCommission,
   matchesSearch,
 } from "@/lib/db/reservations";
 export {

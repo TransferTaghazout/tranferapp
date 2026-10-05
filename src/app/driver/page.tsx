@@ -1,8 +1,7 @@
 import { formatDisplayDate, formatDisplayTime, todayISO, tomorrowISO } from "@/lib/dates";
-import { formatMoney } from "@/lib/money";
 import { requireDriverSession } from "@/lib/auth";
 import { getReservationsForDriver } from "@/lib/db/reservations";
-import { DriverAcceptButton } from "@/app/driver/accept-button";
+import { DriverJobActions } from "@/app/driver/accept-button";
 import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
@@ -49,19 +48,11 @@ export default async function DriverHomePage() {
                   </p>
                 ) : null}
                 {job.description ? <p className="mt-2 text-sm">{job.description}</p> : null}
-                <div className="mt-4 rounded-2xl bg-primary px-4 py-3 text-primary-foreground">
-                  <p className="text-xs uppercase tracking-wider text-white/70">Taman service</p>
-                  <p className="font-display text-3xl">
-                    {formatMoney(job.commission || job.cost)}
-                  </p>
-                </div>
-                {job.status === "Completed" ? (
-                  <p className="mt-3 text-center text-sm font-semibold text-emerald-700">
-                    Accepté — dart
-                  </p>
-                ) : (
-                  <DriverAcceptButton jobId={job.id} />
-                )}
+                <DriverJobActions
+                  jobId={job.id}
+                  driverCommission={job.driverCommission}
+                  completed={job.status === "Completed"}
+                />
               </article>
             ))
           )}

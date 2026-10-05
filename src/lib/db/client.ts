@@ -71,6 +71,7 @@ CREATE TABLE IF NOT EXISTS reservations (
   price NUMERIC NOT NULL DEFAULT 0,
   cost NUMERIC NOT NULL DEFAULT 0,
   commission NUMERIC NOT NULL DEFAULT 0,
+  driver_commission NUMERIC NOT NULL DEFAULT 0,
   profit NUMERIC NOT NULL DEFAULT 0,
   currency TEXT NOT NULL DEFAULT 'MAD',
   status TEXT NOT NULL DEFAULT 'Confirmed',
@@ -126,6 +127,7 @@ ALTER TABLE reservations ADD COLUMN IF NOT EXISTS driver_id TEXT;
 ALTER TABLE reservations ADD COLUMN IF NOT EXISTS driver TEXT NOT NULL DEFAULT '';
 ALTER TABLE reservations ADD COLUMN IF NOT EXISTS pickup_location TEXT NOT NULL DEFAULT '';
 ALTER TABLE reservations ADD COLUMN IF NOT EXISTS destination TEXT NOT NULL DEFAULT '';
+ALTER TABLE reservations ADD COLUMN IF NOT EXISTS driver_commission NUMERIC NOT NULL DEFAULT 0;
 `
 
 export async function ensureSchema() {
