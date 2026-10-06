@@ -29,16 +29,7 @@ export default async function LoginPage({
             Reservations, transfers and daily finance — designed for the field.
           </p>
         </div>
-        <form
-          action={async (formData) => {
-            "use server";
-            const result = await loginAction(undefined, formData);
-            if (result?.error) {
-              redirect(`/login?error=${encodeURIComponent(result.error)}`);
-            }
-          }}
-          className="rounded-[1.8rem] bg-card p-6 shadow-2xl"
-        >
+        <form action={loginAction} className="rounded-[1.8rem] bg-card p-6 shadow-2xl">
           {params.error ? (
             <p className="mb-4 rounded-2xl bg-rose-50 px-3 py-2 text-sm text-rose-800">
               {params.error}
