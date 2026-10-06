@@ -17,7 +17,8 @@ type DbTarget = {
 };
 
 export function getDatabaseUrl() {
-  if (process.env.DATABASE_URL) return process.env.DATABASE_URL;
+  const fromEnv = process.env.DATABASE_URL?.trim().replace(/^["']|["']$/g, "");
+  if (fromEnv) return fromEnv;
   const host = process.env.POSTGRES_HOST || process.env.DB_HOST;
   const user = process.env.POSTGRES_USER || process.env.DB_USER;
   const password = process.env.POSTGRES_PASSWORD || process.env.DB_PASSWORD;
@@ -35,14 +36,14 @@ export function isDatabaseConfigured() {
 
 function parseDatabaseUrl(raw: string): DbTarget {
   const match = raw.match(
-    /^postgres(?:ql)?:\/\/([^:/?#]+):([^@/?#]+)@(\[[^\]]+\]|[^:/?#]+):(\d+)\/([^?]+)/i,
+    /^postgres(?:ql)?:\/\/([^:/?#]+):([^@/?#]+)@(\[[^\]]+\]|[^:/?#]+)(?::(\d+))?\/([^?]+)/i,
   );
   if (match) {
     return {
       user: decodeURIComponent(match[1]),
       password: decodeURIComponent(match[2]),
       host: match[3],
-      port: Number(match[4]),
+      port: Number(match[4] || "5432"),
       database: decodeURIComponent(match[5].replace(/\/$/, "")),
       ssl: /sslmode=require/i.test(raw),
     };

@@ -22,64 +22,46 @@ function isPublic(pathname: string) {
   );
 }
 
-function firstHeader(request: NextRequest, name: string) {
-  return request.headers.get(name)?.split(",")[0]?.trim() || "";
-}
-
-function publicOrigin(request: NextRequest) {
-  const host =
-    firstHeader(request, "x-forwarded-host") || firstHeader(request, "host") || request.nextUrl.host;
-  const proto =
-    firstHeader(request, "x-forwarded-proto") ||
-    (request.nextUrl.protocol === "https:" ? "https" : "http");
-  return `${proto}://${host}`;
-}
-
-function redirectTo(request: NextRequest, path: string) {
-  return NextResponse.redirect(`${publicOrigin(request)}${path}`);
-}
-
-function nextWithForwardedHost(request: NextRequest) {
-  const requestHeaders = new Headers(request.headers);
-  const host = firstHeader(request, "x-forwarded-host") || firstHeader(request, "host");
-  const proto = firstHeader(request, "x-forwarded-proto") || "https";
-  if (host) {
-    requestHeaders.set("x-forwarded-host", host);
-    requestHeaders.set("x-forwarded-proto", proto);
-    requestHeaders.set("host", host);
-  }
-  return NextResponse.next({ request: { headers: requestHeaders } });
+function redirectTo(request: NextRequest, pathname: string) {
+  const url = request.nextUrl.clone();
+  url.pathname = pathname;
+  url.search = "";
+  url.hash = "";
+  return NextResponse.redirect(url);
 }
 
 export async function proxy(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-  if (pathname === "/health" || pathname === "/healthz") {
-    return NextResponse.rewrite(new URL("/api/health", request.url));
-  }
-  if (isPublic(pathname)) {
-    return nextWithForwardedHost(request);
-  }
-
-  const token = request.cookies.get("trm_session")?.value;
-  const secret = process.env.AUTH_SECRET || "atlas-coast-transfer-auth-secret";
-  if (!token) {
-    return redirectTo(request, "/login");
-  }
-
   try {
-    const { payload } = await jwtVerify(token, new TextEncoder().encode(secret));
-    const role = payload.role === "driver" ? "driver" : "admin";
-    if (role === "driver" && !pathname.startsWith("/driver")) {
-      return redirectTo(request, "/driver");
+    const { pathname } = request.nextUrl;
+    if (pathname === "/health" || pathname === "/healthz") {
+      const url = request.nextUrl.clone();
+      url.pathname = "/api/health";
+      return NextResponse.rewrite(url);
     }
-    if (role === "admin" && pathname.startsWith("/driver") && pathname !== "/driver/login") {
-      return nextWithForwardedHost(request);
+    if (isPublic(pathname)) {
+      return NextResponse.next();
     }
-    return nextWithForwardedHost(request);
+
+    const token = request.cookies.get("trm_session")?.value;
+    const secret = process.env.AUTH_SECRET || "atlas-coast-transfer-auth-secret";
+    if (!token) {
+      return redirectTo(request, "/login");
+    }
+
+    try {
+      const { payload } = await jwtVerify(token, new TextEncoder().encode(secret));
+      const role = payload.role === "driver" ? "driver" : "admin";
+      if (role === "driver" && !pathname.startsWith("/driver")) {
+        return redirectTo(request, "/driver");
+      }
+      return NextResponse.next();
+    } catch {
+      const response = redirectTo(request, "/login");
+      response.cookies.delete("trm_session");
+      return response;
+    }
   } catch {
-    const response = redirectTo(request, "/login");
-    response.cookies.delete("trm_session");
-    return response;
+    return NextResponse.next();
   }
 }
 

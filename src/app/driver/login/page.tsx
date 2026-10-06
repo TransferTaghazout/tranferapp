@@ -13,7 +13,7 @@ export default async function DriverLoginPage({
 }: {
   searchParams: Promise<{ error?: string }>;
 }) {
-  const session = await getSession();
+  const session = await getSession().catch(() => null);
   if (session?.role === "driver") redirect("/driver");
   if (session?.role === "admin") redirect("/");
   const params = await searchParams;
