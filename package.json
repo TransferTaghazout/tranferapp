@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start --hostname 0.0.0.0 --port ${PORT:-3000}",
+    "build": "next build --webpack",
+    "start": "HOSTNAME=0.0.0.0 next start --hostname 0.0.0.0 --port ${PORT:-3000}",
     "lint": "eslint",
     "seed": "npx tsx scripts/seed-demo.ts",
     "db:migrate": "npx tsx scripts/db-migrate.ts"
