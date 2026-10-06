@@ -26,6 +26,11 @@ Open http://localhost:3000
 
 ## Production (EasyPanel)
 
-1. Push this repo to GitHub.
-2. Set `DATABASE_URL` on the **app** service (External IP + port).
-3. Redeploy. Health check: `/api/health`.
+1. Push this repo to GitHub and **Deploy**.
+2. Set `DATABASE_URL` on the **app** service (Postgres External IP + port).
+3. **Domains** on the app service:
+   - Hostname = your website domain
+   - HTTPS on
+   - **Target / internal port = 3000** (not 80)
+   - DNS A record of that domain must point to the EasyPanel server IP
+4. Redeploy. Open `/login`. Health check: `/api/health`.
