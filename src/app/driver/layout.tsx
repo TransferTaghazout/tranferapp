@@ -11,19 +11,26 @@ export default async function DriverLayout({ children }: { children: React.React
   }
 
   return (
-    <div className="mx-auto min-h-dvh max-w-lg px-4 pb-10 pt-6">
-      <header className="mb-6 flex items-center justify-between">
-        <div>
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-sand">Driver</p>
-          <h1 className="font-display text-3xl">{session.name}</h1>
+    <div className="min-h-dvh bg-[#f4efe4]">
+      <header className="bg-primary text-primary-foreground">
+        <div className="mx-auto flex max-w-lg items-center justify-between gap-3 px-5 py-5">
+          <div className="min-w-0">
+            <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-sand">Driver board</p>
+            <h1 className="truncate font-display text-3xl leading-none">{session.name}</h1>
+          </div>
+          <form action={logoutAction}>
+            <Button
+              type="submit"
+              variant="secondary"
+              size="sm"
+              className="shrink-0 bg-white/15 text-white hover:bg-white/25"
+            >
+              Sign out
+            </Button>
+          </form>
         </div>
-        <form action={logoutAction}>
-          <Button type="submit" variant="outline" size="sm">
-            Sign out
-          </Button>
-        </form>
       </header>
-      {children}
+      <main className="mx-auto max-w-lg px-4 py-5 pb-16">{children}</main>
     </div>
   );
 }

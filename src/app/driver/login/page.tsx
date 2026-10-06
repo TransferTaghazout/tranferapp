@@ -25,7 +25,7 @@ export default async function DriverLoginPage({
         <div className="mb-10 text-white">
           <p className="text-xs uppercase tracking-[0.25em] text-white/70">Driver</p>
           <h1 className="mt-3 font-display text-5xl leading-none">My jobs</h1>
-          <p className="mt-4 max-w-xs text-white/80">See assigned jobs and your commission.</p>
+          <p className="mt-4 max-w-xs text-white/80">Your assigned transfers — time, pickup, destination.</p>
         </div>
         <form
           action={async (formData) => {

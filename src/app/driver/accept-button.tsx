@@ -51,7 +51,7 @@ export function DriverJobActions({
         />
       </div>
       {completed ? (
-        <p className="text-center text-sm font-semibold text-emerald-700">Completed</p>
+        <p className="text-center text-sm font-semibold text-emerald-700">Job completed</p>
       ) : (
         <div className="grid gap-2">
           <Button
@@ -60,10 +60,10 @@ export function DriverJobActions({
             disabled={pending}
             onClick={() => run(saveDriverCommissionAction)}
           >
-            {pending ? "..." : "Save commission"}
+            {pending ? "Saving..." : "Save commission"}
           </Button>
-          <Button type="button" disabled={pending} onClick={() => run(completeDriverJobAction)}>
-            {pending ? "..." : "Accept — job done"}
+          <Button type="button" size="lg" disabled={pending} onClick={() => run(completeDriverJobAction)}>
+            {pending ? "Saving..." : "Mark job done"}
           </Button>
         </div>
       )}

@@ -41,6 +41,15 @@ export function formatDisplayTime(time: string) {
   return time.slice(0, 5);
 }
 
+export function formatShortDate(isoDate: string) {
+  if (!isoDate) return "—";
+  try {
+    return format(parseISO(`${isoDate}T12:00:00`), "dd MMM");
+  } catch {
+    return isoDate;
+  }
+}
+
 export function formatDateTime(isoDate: string, time: string) {
   return `${formatDisplayDate(isoDate)} · ${formatDisplayTime(time)}`;
 }
