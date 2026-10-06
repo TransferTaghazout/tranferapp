@@ -22,7 +22,7 @@ export default async function TodayPage() {
     .sort((a, b) => a.time.localeCompare(b.time));
   const summary = summarizeReservations(todays);
   const counts = {
-    pending: todays.filter((item) => item.status === "Pending").length,
+    pending: todays.filter((item) => item.status === "New" || item.status === "On the way").length,
     confirmed: todays.filter((item) => item.status === "Confirmed").length,
     completed: todays.filter((item) => item.status === "Completed").length,
   };
@@ -80,7 +80,7 @@ export default async function TodayPage() {
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <QuickLink href="/reservations/new" icon={<Plus className="h-4 w-4" />} label="Add reservation" />
         <QuickLink href="/calendar" icon={<CalendarDays className="h-4 w-4" />} label="Calendar" />
-        <QuickLink href="/finance" icon={<CircleDollarSign className="h-4 w-4" />} label="Finance" />
+        <QuickLink href="/drive" icon={<CircleDollarSign className="h-4 w-4" />} label="Drive" />
       </div>
 
       <TomorrowBoard

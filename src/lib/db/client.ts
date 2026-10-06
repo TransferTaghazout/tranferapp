@@ -227,6 +227,35 @@ ALTER TABLE reservations ADD COLUMN IF NOT EXISTS driver TEXT NOT NULL DEFAULT '
 ALTER TABLE reservations ADD COLUMN IF NOT EXISTS pickup_location TEXT NOT NULL DEFAULT '';
 ALTER TABLE reservations ADD COLUMN IF NOT EXISTS destination TEXT NOT NULL DEFAULT '';
 ALTER TABLE reservations ADD COLUMN IF NOT EXISTS driver_commission NUMERIC NOT NULL DEFAULT 0;
+ALTER TABLE reservations ADD COLUMN IF NOT EXISTS commission_type TEXT NOT NULL DEFAULT 'fixed';
+ALTER TABLE reservations ADD COLUMN IF NOT EXISTS commission_rate NUMERIC NOT NULL DEFAULT 0;
+ALTER TABLE reservations ADD COLUMN IF NOT EXISTS expected_amount NUMERIC NOT NULL DEFAULT 0;
+ALTER TABLE reservations ADD COLUMN IF NOT EXISTS amount_received NUMERIC NOT NULL DEFAULT 0;
+ALTER TABLE reservations ADD COLUMN IF NOT EXISTS difference NUMERIC NOT NULL DEFAULT 0;
+ALTER TABLE reservations ADD COLUMN IF NOT EXISTS adjustment_amount NUMERIC NOT NULL DEFAULT 0;
+ALTER TABLE reservations ADD COLUMN IF NOT EXISTS adjustment_reason TEXT NOT NULL DEFAULT '';
+ALTER TABLE reservations ADD COLUMN IF NOT EXISTS cancellation_reason TEXT NOT NULL DEFAULT '';
+ALTER TABLE reservations ADD COLUMN IF NOT EXISTS cancellation_fee NUMERIC NOT NULL DEFAULT 0;
+ALTER TABLE reservations ADD COLUMN IF NOT EXISTS cancellation_commission NUMERIC NOT NULL DEFAULT 0;
+ALTER TABLE reservations ADD COLUMN IF NOT EXISTS completed_at TEXT NOT NULL DEFAULT '';
+ALTER TABLE reservations ADD COLUMN IF NOT EXISTS completed_by TEXT NOT NULL DEFAULT '';
+ALTER TABLE reservations ADD COLUMN IF NOT EXISTS driver_notes TEXT NOT NULL DEFAULT '';
+ALTER TABLE reservations ADD COLUMN IF NOT EXISTS financial_notes TEXT NOT NULL DEFAULT '';
+
+CREATE TABLE IF NOT EXISTS financial_history (
+  id TEXT PRIMARY KEY,
+  timestamp TEXT NOT NULL,
+  reservation_id TEXT NOT NULL,
+  action TEXT NOT NULL,
+  old_value TEXT NOT NULL DEFAULT '',
+  new_value TEXT NOT NULL DEFAULT '',
+  difference NUMERIC NOT NULL DEFAULT 0,
+  reason TEXT NOT NULL DEFAULT '',
+  actor TEXT NOT NULL DEFAULT '',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS financial_history_reservation_idx ON financial_history(reservation_id);
 `
 
 export async function ensureSchema() {

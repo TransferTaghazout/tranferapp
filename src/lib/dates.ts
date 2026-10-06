@@ -14,6 +14,10 @@ export function tomorrowISO(timezone = TIMEZONE) {
   return formatISODate(addDays(nowInTimezone(timezone), 1));
 }
 
+export function yesterdayISO(timezone = TIMEZONE) {
+  return formatISODate(addDays(nowInTimezone(timezone), -1));
+}
+
 export function formatISODate(date: Date) {
   return format(date, "yyyy-MM-dd");
 }
@@ -22,6 +26,15 @@ export function formatDisplayDate(isoDate: string) {
   if (!isoDate) return "—";
   try {
     return format(parseISO(`${isoDate}T12:00:00`), "dd MMM yyyy");
+  } catch {
+    return isoDate;
+  }
+}
+
+export function formatBriefingDate(isoDate: string) {
+  if (!isoDate) return "";
+  try {
+    return format(parseISO(`${isoDate}T12:00:00`), "dd/MMM/yyyy");
   } catch {
     return isoDate;
   }

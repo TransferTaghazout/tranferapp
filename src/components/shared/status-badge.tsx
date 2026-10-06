@@ -1,19 +1,21 @@
 import { Badge } from "@/components/ui/badge";
 import { PaymentStatus, ReservationStatus } from "@/lib/types";
 
-const statusVariant = {
+const statusVariant: Record<ReservationStatus, "confirmed" | "pending" | "ontheway" | "completed" | "cancelled" | "noshow"> = {
+  New: "pending",
   Confirmed: "confirmed",
-  Pending: "pending",
+  "On the way": "ontheway",
   Completed: "completed",
   Cancelled: "cancelled",
   "No Show": "noshow",
-} as const;
+};
 
-const paymentVariant = {
+const paymentVariant: Record<PaymentStatus, "paid" | "deposit" | "unpaid" | "refunded"> = {
   Paid: "paid",
-  Deposit: "deposit",
+  "Partially Paid": "deposit",
   Unpaid: "unpaid",
-} as const;
+  Refunded: "refunded",
+};
 
 export function StatusBadge({ status }: { status: ReservationStatus }) {
   return <Badge variant={statusVariant[status]}>{status}</Badge>;

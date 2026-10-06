@@ -7,10 +7,7 @@ import { toast } from "sonner";
 import { Check, MessageCircle, Pencil, Phone, X } from "lucide-react";
 import { Reservation } from "@/lib/types";
 import { telLink, whatsappLink } from "@/lib/phone";
-import {
-  deleteReservationAction,
-  setReservationStatusAction,
-} from "@/app/actions/reservations";
+import { deleteReservationAction } from "@/app/actions/reservations";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -35,15 +32,6 @@ export function ReservationActions({
   const [pending, startTransition] = useTransition();
   const wa = whatsappLink(reservation.whatsapp || reservation.phone, countryCode);
   const tel = telLink(reservation.phone);
-
-  function runStatus(status: "Completed" | "Cancelled") {
-    startTransition(async () => {
-      const result = await setReservationStatusAction(reservation.id, status);
-      if (!result.ok) toast.error(result.message);
-      else toast.success(result.message);
-      router.refresh();
-    });
-  }
 
   function runDelete() {
     startTransition(async () => {
@@ -79,19 +67,15 @@ export function ReservationActions({
           </a>
         </Button>
       ) : null}
-      <Button
-        variant="default"
-        disabled={pending || reservation.status === "Completed"}
-        onClick={() => runStatus("Completed")}
-      >
-        <Check /> Mark completed
+      <Button asChild variant="default">
+        <Link href={`/drive/${reservation.id}`}>
+          <Check /> Complete
+        </Link>
       </Button>
-      <Button
-        variant="outline"
-        disabled={pending || reservation.status === "Cancelled"}
-        onClick={() => runStatus("Cancelled")}
-      >
-        <X /> Cancel
+      <Button asChild variant="outline">
+        <Link href={`/drive/${reservation.id}`}>
+          <X /> Cancel
+        </Link>
       </Button>
       <AlertDialog>
         <AlertDialogTrigger asChild>

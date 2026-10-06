@@ -3,70 +3,38 @@
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import {
-  completeDriverJobAction,
-  saveDriverCommissionAction,
-} from "@/app/actions/driver-jobs";
+import { completeDriverJobAction } from "@/app/actions/driver-jobs";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 export function DriverJobActions({
   jobId,
-  driverCommission,
   completed,
 }: {
   jobId: string;
-  driverCommission: number;
+  driverCommission?: number;
   completed: boolean;
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
 
-  function run(action: typeof completeDriverJobAction) {
+  function markDone() {
     startTransition(async () => {
-      const form = document.getElementById(`driver-job-${jobId}`) as HTMLFormElement | null;
-      if (!form) return;
-      const result = await action(new FormData(form));
+      const form = new FormData();
+      form.set("id", jobId);
+      const result = await completeDriverJobAction(form);
       if (!result.ok) toast.error(result.message);
       else toast.success(result.message);
       router.refresh();
     });
   }
 
+  if (completed) {
+    return <p className="mt-3 text-center text-sm font-semibold text-emerald-700">Job completed</p>;
+  }
+
   return (
-    <form id={`driver-job-${jobId}`} className="mt-4 space-y-3">
-      <input type="hidden" name="id" value={jobId} />
-      <div className="rounded-2xl bg-emerald-100 p-3">
-        <p className="mb-1 text-xs font-bold uppercase tracking-wider text-emerald-800">
-          My commission
-        </p>
-        <Input
-          name="driverCommission"
-          type="number"
-          min={0}
-          defaultValue={driverCommission || ""}
-          placeholder="Your amount"
-          className="border-emerald-200 bg-white"
-          disabled={completed}
-        />
-      </div>
-      {completed ? (
-        <p className="text-center text-sm font-semibold text-emerald-700">Job completed</p>
-      ) : (
-        <div className="grid gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            disabled={pending}
-            onClick={() => run(saveDriverCommissionAction)}
-          >
-            {pending ? "Saving..." : "Save commission"}
-          </Button>
-          <Button type="button" size="lg" disabled={pending} onClick={() => run(completeDriverJobAction)}>
-            {pending ? "Saving..." : "Mark job done"}
-          </Button>
-        </div>
-      )}
-    </form>
+    <Button type="button" size="lg" className="mt-3 w-full" disabled={pending} onClick={markDone}>
+      {pending ? "Saving..." : "Mark job done"}
+    </Button>
   );
 }

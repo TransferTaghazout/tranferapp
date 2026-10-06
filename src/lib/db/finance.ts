@@ -14,7 +14,7 @@ export function summarizeReservations(
   range?: DateRange,
 ): FinanceSummary {
   const items = reservations.filter((item) => {
-    if (item.status === "Cancelled") return false;
+    if (item.status === "Cancelled" || item.status === "No Show") return false;
     if (!range) return true;
     return inRange(item.date, range.from, range.to);
   });
@@ -44,7 +44,7 @@ export function financeByServiceType(
   type?: ServiceType | "All",
 ): FinanceByService[] {
   const items = reservations.filter((item) => {
-    if (item.status === "Cancelled") return false;
+    if (item.status === "Cancelled" || item.status === "No Show") return false;
     if (range && !inRange(item.date, range.from, range.to)) return false;
     if (type && type !== "All" && item.type !== type) return false;
     return true;
@@ -79,7 +79,7 @@ export function financeByServiceName(
   range?: DateRange,
 ): FinanceByService[] {
   const items = reservations.filter((item) => {
-    if (item.status === "Cancelled") return false;
+    if (item.status === "Cancelled" || item.status === "No Show") return false;
     if (range && !inRange(item.date, range.from, range.to)) return false;
     return true;
   });

@@ -1,12 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { MessageCircle, Phone } from "lucide-react";
 import { Reservation } from "@/lib/types";
 import { formatDisplayTime, formatShortDate } from "@/lib/dates";
 import { formatMoney } from "@/lib/money";
 import { telLink, whatsappLink } from "@/lib/phone";
 import { StatusBadge } from "@/components/shared/status-badge";
-import { DriverJobActions } from "@/app/driver/accept-button";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -26,7 +26,7 @@ export function DriverJobCard({
     job.pickupLocation && job.destination
       ? `${job.pickupLocation} → ${job.destination}`
       : job.pickupLocation || job.destination;
-  const completed = job.status === "Completed";
+  const closed = job.status === "Completed" || job.status === "Cancelled" || job.status === "No Show";
 
   return (
     <article
@@ -54,47 +54,37 @@ export function DriverJobCard({
           </div>
           <h3 className="mt-1 truncate font-display text-2xl leading-tight">{job.customerName}</h3>
           {route ? <p className="mt-1 text-sm font-medium text-foreground">{route}</p> : null}
-          {job.flightNumber ? (
-            <p className="mt-1 text-sm text-muted-foreground">Flight {job.flightNumber}</p>
-          ) : null}
-          {job.description ? <p className="mt-2 text-sm text-muted-foreground">{job.description}</p> : null}
+          <p className="mt-1 text-sm text-muted-foreground">
+            {job.numberOfPeople} {job.numberOfPeople === 1 ? "passenger" : "passengers"}
+          </p>
         </div>
       </div>
 
-      {callHref || waHref ? (
-        <div className={`grid gap-2 px-4 ${callHref && waHref ? "grid-cols-2" : "grid-cols-1"}`}>
-          {callHref ? (
-            <Button asChild variant="outline" size="sm">
-              <a href={callHref}>
-                <Phone /> Call
-              </a>
-            </Button>
-          ) : null}
-          {waHref ? (
-            <Button asChild variant="ocean" size="sm">
-              <a href={waHref} target="_blank" rel="noreferrer">
-                <MessageCircle /> WhatsApp
-              </a>
-            </Button>
-          ) : null}
-        </div>
-      ) : null}
+      <div className={`grid gap-2 px-4 ${callHref && waHref ? "grid-cols-3" : "grid-cols-2"}`}>
+        <Button asChild size="sm">
+          <Link href={`/driver/${job.id}`}>Open</Link>
+        </Button>
+        {waHref ? (
+          <Button asChild variant="ocean" size="sm">
+            <a href={waHref} target="_blank" rel="noreferrer">
+              <MessageCircle /> WhatsApp
+            </a>
+          </Button>
+        ) : null}
+        {callHref ? (
+          <Button asChild variant="outline" size="sm">
+            <a href={callHref}>
+              <Phone /> Call
+            </a>
+          </Button>
+        ) : null}
+      </div>
 
       <div className="px-4 pb-4">
-        {!completed ? (
-          <p className="mt-3 text-sm font-semibold text-emerald-800">
-            Your commission: {job.driverCommission ? formatMoney(job.driverCommission) : "enter below"}
-          </p>
-        ) : (
-          <p className="mt-3 text-sm font-semibold text-emerald-700">
-            Paid commission: {formatMoney(job.driverCommission)}
-          </p>
-        )}
-        <DriverJobActions
-          jobId={job.id}
-          driverCommission={job.driverCommission}
-          completed={completed}
-        />
+        <p className="mt-3 text-sm font-semibold text-emerald-800">
+          {closed ? "You earned" : "We will pay you"}:{" "}
+          {job.driverCommission ? formatMoney(job.driverCommission) : "to confirm"}
+        </p>
       </div>
     </article>
   );

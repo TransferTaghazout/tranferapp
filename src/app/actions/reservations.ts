@@ -10,7 +10,11 @@ import {
   updateReservation,
   updateReservationStatus,
 } from "@/lib/db";
-import { ReservationStatus } from "@/lib/types";
+import { getDriverById } from "@/lib/db/drivers";
+import { getSettings } from "@/lib/db/settings";
+import { assignedJobWhatsAppMessage, bookingShareMessage } from "@/lib/briefing";
+import { whatsappShareLink } from "@/lib/phone";
+import { DEFAULT_SETTINGS, ReservationStatus } from "@/lib/types";
 
 function revalidateReservationViews() {
   revalidatePath("/");
@@ -21,6 +25,7 @@ function revalidateReservationViews() {
   revalidatePath("/search");
   revalidatePath("/drivers");
   revalidatePath("/driver");
+  revalidatePath("/drive");
 }
 
 export async function saveReservationAction(formData: FormData) {
@@ -41,6 +46,8 @@ export async function saveReservationAction(formData: FormData) {
     cost: formData.get("driverCommission") || 0,
     commission: formData.get("commission") || 0,
     driverCommission: formData.get("driverCommission") || 0,
+    commissionType: formData.get("commissionType") || "fixed",
+    commissionRate: formData.get("commissionRate") || 0,
     currency: formData.get("currency") || "MAD",
     status: formData.get("status"),
     paymentStatus: formData.get("paymentStatus"),
@@ -66,9 +73,28 @@ export async function saveReservationAction(formData: FormData) {
       : await createReservation(parsed.data);
     revalidateReservationViews();
     revalidatePath(`/reservations/${reservation.id}`);
+    const settings = await getSettings().catch(() => DEFAULT_SETTINGS);
+    let notifyHref = "";
+    if (reservation.driverId) {
+      const driver = await getDriverById(reservation.driverId).catch(() => null);
+      if (driver?.phone) {
+        notifyHref = whatsappShareLink(
+          assignedJobWhatsAppMessage(reservation),
+          driver.phone,
+          settings.whatsappCountryCode,
+        );
+      }
+    }
+    const shareHref = whatsappShareLink(
+      bookingShareMessage(reservation),
+      undefined,
+      settings.whatsappCountryCode,
+    );
     return {
       ok: true as const,
       id: reservation.id,
+      notifyHref,
+      shareHref,
       message: parsed.data.id
         ? "Reservation updated successfully."
         : "Reservation created successfully.",

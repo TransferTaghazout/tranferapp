@@ -1,5 +1,6 @@
-import { monthRange, todayISO, tomorrowISO, weekRange, inRange } from "@/lib/dates";
+import { monthRange, todayISO, tomorrowISO, weekRange, inRange, yesterdayISO } from "@/lib/dates";
 import { matchesSearch } from "@/lib/db/reservations";
+import { isCancelledStatus, isOpenStatus } from "@/lib/drive-finance";
 import { Reservation } from "@/lib/types";
 
 export function filterReservations(
@@ -14,6 +15,7 @@ export function filterReservations(
     status?: string;
     paymentStatus?: string;
     range?: string;
+    driverId?: string;
   },
 ) {
   const today = todayISO();
@@ -25,6 +27,9 @@ export function filterReservations(
     to = today;
   } else if (params.range === "tomorrow") {
     from = tomorrowISO();
+    to = from;
+  } else if (params.range === "yesterday") {
+    from = yesterdayISO();
     to = from;
   } else if (params.range === "week") {
     const week = weekRange(today);
@@ -46,6 +51,10 @@ export function filterReservations(
     if (from && to && !inRange(item.date, from, to)) return false;
     if (params.service && item.serviceName !== params.service) return false;
     if (params.type && item.type !== params.type) return false;
+    if (params.driverId && item.driverId !== params.driverId) return false;
+    if (params.range === "completed" && item.status !== "Completed") return false;
+    if (params.range === "pending" && !isOpenStatus(item.status)) return false;
+    if (params.range === "cancelled" && !isCancelledStatus(item.status)) return false;
     if (params.status && item.status !== params.status) return false;
     if (params.paymentStatus && item.paymentStatus !== params.paymentStatus) return false;
     return true;

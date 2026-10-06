@@ -5,6 +5,7 @@ export {
   getReservationsForDriver,
   createReservation,
   updateReservation,
+  saveReservationRecord,
   deleteReservation,
   updateReservationStatus,
   updateDriverCommission,
@@ -42,6 +43,7 @@ export {
   updateDriver,
   authenticateDriver,
 } from "@/lib/db/drivers";
+export { logFinancialHistory, getFinancialHistory } from "@/lib/db/finance-history";
 
 export async function seedDemoData() {
   const { ensureSchema, getConnectedPool } = await import("@/lib/db/client");

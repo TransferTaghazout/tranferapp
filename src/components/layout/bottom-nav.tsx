@@ -7,15 +7,19 @@ import { cn } from "@/lib/utils";
 
 const items = [
   { href: "/", label: "Today", icon: Sun },
-  { href: "/calendar", label: "Calendar", icon: CalendarDays },
-  { href: "/reservations", label: "Reservations", icon: ListTodo },
+  { href: "/drive", label: "Drive", icon: ListTodo },
+  { href: "/reservations", label: "Bookings", icon: CalendarDays },
   { href: "/finance", label: "Finance", icon: CircleDollarSign },
   { href: "/more", label: "More", icon: MoreHorizontal },
 ];
 
 export function BottomNav() {
   const pathname = usePathname();
-  if (pathname.startsWith("/reservations/new") || pathname.endsWith("/edit")) {
+  if (
+    pathname.startsWith("/reservations/new") ||
+    pathname.endsWith("/edit") ||
+    /^\/drive\/[^/]+/.test(pathname)
+  ) {
     return null;
   }
 

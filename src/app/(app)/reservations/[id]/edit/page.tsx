@@ -28,6 +28,7 @@ export default async function EditReservationPage({
         drivers={drivers}
         defaultDate={todayISO()}
         defaultTime={currentTime(settings.timezone)}
+        countryCode={settings.whatsappCountryCode}
       />
     </div>
   );

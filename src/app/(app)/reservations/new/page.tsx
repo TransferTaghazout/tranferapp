@@ -21,7 +21,9 @@ export default async function NewReservationPage({
       <header>
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-sand">Create</p>
         <h1 className="mt-1 font-display text-4xl">Add reservation</h1>
-        <p className="text-muted-foreground">Name, date, type, transfer, description, finance.</p>
+        <p className="text-muted-foreground">
+          Pickup, drop-off, passengers, vehicle, price — then share on WhatsApp.
+        </p>
       </header>
       <ReservationForm
         services={services.filter((s) => s.active)}
@@ -30,6 +32,7 @@ export default async function NewReservationPage({
         drivers={drivers}
         defaultDate={params.date || todayISO()}
         defaultTime={currentTime(settings.timezone)}
+        countryCode={settings.whatsappCountryCode}
       />
     </div>
   );

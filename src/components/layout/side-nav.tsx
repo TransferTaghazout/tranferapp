@@ -13,11 +13,13 @@ import {
   Truck,
   Users,
   Wallet,
+  Waypoints,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const items = [
   { href: "/", label: "Today", icon: Sun },
+  { href: "/drive", label: "Drive", icon: Waypoints },
   { href: "/calendar", label: "Calendar", icon: CalendarDays },
   { href: "/reservations", label: "Reservations", icon: ListTodo },
   { href: "/finance", label: "Finance", icon: CircleDollarSign },

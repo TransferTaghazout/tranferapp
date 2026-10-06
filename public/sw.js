@@ -19,10 +19,19 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
+  const url = event.notification.data?.url || "/";
   event.waitUntil(
     self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clients) => {
-      if (clients.length > 0) return clients[0].focus();
-      return self.clients.openWindow("/");
+      const existing = clients.find((client) => {
+        try {
+          return new URL(client.url).pathname.startsWith(url === "/" ? "/" : url);
+        } catch {
+          return false;
+        }
+      });
+      if (existing) return existing.focus();
+      if (clients.length > 0 && url === "/") return clients[0].focus();
+      return self.clients.openWindow(url);
     }),
   );
 });

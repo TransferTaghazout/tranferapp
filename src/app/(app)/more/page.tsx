@@ -19,6 +19,7 @@ export default async function MorePage() {
       </header>
 
       <div className="grid gap-3">
+        <MoreLink href="/drive" title="Drive" text="Complete jobs, commission, missing money and cancellations" />
         <MoreLink href="/drivers" title="Drivers" text="Name, phone, email and assigned jobs" />
         <MoreLink href="/services" title="Services" text="Prices, costs and catalog" />
         <MoreLink href="/customers" title="Customers" text="Repeat guests and history" />

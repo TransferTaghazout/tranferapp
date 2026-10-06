@@ -30,7 +30,7 @@ export default async function DriverLayout({ children }: { children: React.React
           </form>
         </div>
       </header>
-      <main className="mx-auto max-w-lg px-4 py-5 pb-16">{children}</main>
+      <main className="mx-auto max-w-lg px-4 py-5 pb-24">{children}</main>
     </div>
   );
 }

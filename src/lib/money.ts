@@ -8,6 +8,14 @@ export function toMoney(value: unknown): number {
   return roundMoney(Math.max(0, parsed));
 }
 
+export function toSignedMoney(value: unknown): number {
+  if (value === null || value === undefined || value === "") return 0;
+  const parsed =
+    typeof value === "number" ? value : Number(String(value).replace(/[^\d.-]/g, ""));
+  if (!Number.isFinite(parsed)) return 0;
+  return roundMoney(parsed);
+}
+
 export function roundMoney(value: number) {
   return Math.round(value * 100) / 100;
 }

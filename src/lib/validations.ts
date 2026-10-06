@@ -1,11 +1,15 @@
 import { z } from "zod";
 import {
+  COMMISSION_TYPES,
   PAYMENT_STATUSES,
   RESERVATION_STATUSES,
   SERVICE_TYPES,
+  normalizePaymentStatus,
+  normalizeReservationStatus,
 } from "@/lib/types";
 
 const moneyField = z.coerce.number().min(0, "Must be 0 or more");
+const signedMoney = z.coerce.number();
 
 export const reservationSchema = z.object({
   id: z.string().optional(),
@@ -23,9 +27,22 @@ export const reservationSchema = z.object({
   cost: moneyField.optional().default(0),
   commission: moneyField.optional().default(0),
   driverCommission: moneyField.optional().default(0),
+  commissionType: z.enum(COMMISSION_TYPES).optional().default("fixed"),
+  commissionRate: moneyField.optional().default(0),
+  amountReceived: moneyField.optional(),
+  difference: signedMoney.optional(),
+  adjustmentAmount: signedMoney.optional(),
+  adjustmentReason: z.string().optional(),
+  cancellationReason: z.string().optional(),
+  cancellationFee: moneyField.optional(),
+  cancellationCommission: moneyField.optional(),
+  completedAt: z.string().optional(),
+  completedBy: z.string().optional(),
+  driverNotes: z.string().optional(),
+  financialNotes: z.string().optional(),
   currency: z.string().optional().default("MAD"),
-  status: z.enum(RESERVATION_STATUSES),
-  paymentStatus: z.enum(PAYMENT_STATUSES),
+  status: z.preprocess(normalizeReservationStatus, z.enum(RESERVATION_STATUSES)),
+  paymentStatus: z.preprocess(normalizePaymentStatus, z.enum(PAYMENT_STATUSES)),
   description: z.string().optional().default(""),
   internalNotes: z.string().optional().default(""),
   driver: z.string().trim().optional().default(""),
@@ -96,7 +113,8 @@ export const reservationFiltersSchema = z.object({
   status: z.string().optional().default(""),
   paymentStatus: z.string().optional().default(""),
   range: z
-    .enum(["today", "tomorrow", "week", "month", "all", "custom"])
+    .enum(["today", "tomorrow", "yesterday", "week", "month", "all", "custom", "completed", "pending", "cancelled"])
     .optional()
     .default("all"),
+  driverId: z.string().optional().default(""),
 });

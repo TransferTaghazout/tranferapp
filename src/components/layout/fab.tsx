@@ -6,7 +6,7 @@ import { Plus } from "lucide-react";
 
 export function Fab() {
   const pathname = usePathname();
-  if (pathname.startsWith("/reservations/new") || pathname.endsWith("/edit")) {
+  if (pathname.startsWith("/reservations/new") || pathname.endsWith("/edit") || pathname.startsWith("/drive/")) {
     return null;
   }
 
